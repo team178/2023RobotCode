@@ -4,8 +4,20 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivetrain;
+
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
+import com.pathplanner.lib.server.PathPlannerServer;
+
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,9 +35,22 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    
+  private final RamseteAutoBuilder m_autoBuilder = new RamseteAutoBuilder(
+    m_drivetrain::getEstimatedPosition,
+    m_drivetrain::resetPose,
+    new RamseteController(),
+    DriveConstants.kDriveKinematics,
+    m_drivetrain::tankDriveVolts,
+    Autos.eventMap,
+    m_drivetrain
+  );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    PathPlannerServer.startServer(5811);
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -59,7 +84,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null; //! will probably error at some point and we won't know why
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("TestPath", new PathConstraints(1, 3));
+    return m_autoBuilder.fullAuto(pathGroup); //! will probably error at some point and we won't know why
   }
 }

@@ -58,6 +58,7 @@ public final class Constants {
 
     public static final double kS = 1; //! Need to be tuned
     public static final double kV = 3;
+    public static final double kA = 1;
 
     public static final double kPVel = 1;
 

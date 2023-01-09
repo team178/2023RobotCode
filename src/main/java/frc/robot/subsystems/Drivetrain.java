@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
@@ -44,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController m_leftPIDController = new PIDController(DriveConstants.kPVel, 0, 0);
   private final PIDController m_rightPIDController = new PIDController(DriveConstants.kPVel, 0, 0);
   
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV);
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV, DriveConstants.kA);
 
   private final Field2d m_field = new Field2d();
 
@@ -134,6 +134,26 @@ public class Drivetrain extends SubsystemBase {
 
   public double getRightEncoderVelocityMeters() {
     return talonUnitsToMeters(m_rightMotor.getSelectedSensorVelocity());
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(
+      getLeftEncoderVelocityMeters(),
+      getRightEncoderVelocityMeters()
+    );
+  }
+
+  public Pose2d getEstimatedPosition() {
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
+  public void resetPose(Pose2d pose) {
+    m_poseEstimator.resetPosition(
+        getGyroRotation(),
+        getLeftEncoderPositionMeters(),
+        getRightEncoderPositionMeters(),
+        pose
+      );
   }
 
   private double talonUnitsToMeters(double sensorCounts) {
