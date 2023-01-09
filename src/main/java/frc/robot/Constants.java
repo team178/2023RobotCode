@@ -51,7 +51,7 @@ public final class Constants {
     public static final int kEncoderCPR = 2048; // Talon FX constant
     public static final double kWheelDiameter = Units.inchesToMeters(6);
     public static final double kEncoderDistancePerRev = 2 * kWheelDiameter * Math.PI;
-    public static final double kGearboxRatio = 10.0;
+    public static final double kGearboxRatio = (40.0/34.0) * (22.0/14.0);
 
     public static final double kTrackWidth = Units.inchesToMeters(21);
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
