@@ -27,26 +27,24 @@ public final class Constants {
      * Ports might be changed later, but here's how I plan to ID them
      *
      * LEFT:   _______ 
-     *        /   1   \
+     *        /   -   \
      *       /         \
-     *      /  2     3  \
+     *      /  10   11  \
      *      -------------
      * 
      * RIGHT:  _______ 
-     *        /   4   \
+     *        /   -   \
      *       /         \
-     *      /  6     5  \
+     *      /  13   12  \
      *      -------------
      * 
      * - Both viewed from the inside of the robot, back of the gearbox
      */
 
-    public static final int kL1MotorPort = 1;
-    public static final int kL2MotorPort = 2;
-    public static final int kL3MotorPort = 3;
-    public static final int kR1MotorPort = 4;
-    public static final int kR2MotorPort = 5;
-    public static final int kR3MotorPort = 6;
+    public static final int kL1MotorPort = 10;
+    public static final int kL2MotorPort = 11;
+    public static final int kR1MotorPort = 12;
+    public static final int kR2MotorPort = 13;
 
     public static final int kEncoderCPR = 2048; // Talon FX constant
     public static final double kWheelDiameter = Units.inchesToMeters(6);

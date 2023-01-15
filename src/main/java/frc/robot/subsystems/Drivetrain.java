@@ -32,12 +32,10 @@ public class Drivetrain extends SubsystemBase {
   private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro(sPort);
     
   private WPI_TalonFX m_leftMotor = new WPI_TalonFX(DriveConstants.kL1MotorPort);
-  private WPI_TalonFX m_leftFollower1 = new WPI_TalonFX(DriveConstants.kL2MotorPort);
-  private WPI_TalonFX m_leftFollower2 = new WPI_TalonFX(DriveConstants.kL3MotorPort);
+  private WPI_TalonFX m_leftFollower = new WPI_TalonFX(DriveConstants.kL2MotorPort);
 
   private WPI_TalonFX m_rightMotor = new WPI_TalonFX(DriveConstants.kR1MotorPort);
-  private WPI_TalonFX m_rightFollower1 = new WPI_TalonFX(DriveConstants.kR2MotorPort);
-  private WPI_TalonFX m_rightFollower2 = new WPI_TalonFX(DriveConstants.kR3MotorPort);
+  private WPI_TalonFX m_rightFollower = new WPI_TalonFX(DriveConstants.kR2MotorPort);
 
   private DifferentialDrivePoseEstimator m_poseEstimator;
 
@@ -52,28 +50,20 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
 
     m_leftMotor.configFactoryDefault();
-    m_leftFollower1.configFactoryDefault();
-    m_leftFollower2.configFactoryDefault();
+    m_leftFollower.configFactoryDefault();
 
     m_rightMotor.configFactoryDefault();
-    m_rightFollower1.configFactoryDefault();
-    m_rightFollower2.configFactoryDefault();
+    m_rightfollower.configFactoryDefault();
 
-    m_leftFollower1.follow(m_leftMotor);
-    m_leftFollower2.follow(m_leftMotor);
-
-    m_rightFollower1.follow(m_rightMotor);
-    m_rightFollower2.follow(m_rightMotor);
+    m_leftFollower.follow(m_leftMotor);
+    m_rightfollower.follow(m_rightMotor);
 
     //! Will need to be adjusted until we're going the right direction
     m_leftMotor.setInverted(false);
     m_rightMotor.setInverted(true);
 
-    m_leftFollower1.setInverted(InvertType.FollowMaster);
-    m_leftFollower2.setInverted(InvertType.FollowMaster);
-
-    m_rightFollower1.setInverted(InvertType.FollowMaster);
-    m_rightFollower2.setInverted(InvertType.FollowMaster);
+    m_leftFollower.setInverted(InvertType.FollowMaster);
+    m_rightfollower.setInverted(InvertType.FollowMaster);
 
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
