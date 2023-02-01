@@ -61,4 +61,9 @@ public final class Constants {
     public static final double kPVel = 1;
 
   }
+
+  public static class ClawConstants {
+    public static final int kFwdChannel = 0; // might need to change
+    public static final int kRevChannel = 1; // might need to change
+  }
 }
