@@ -53,17 +53,17 @@ public class Drivetrain extends SubsystemBase {
     m_leftFollower.configFactoryDefault();
 
     m_rightMotor.configFactoryDefault();
-    m_rightfollower.configFactoryDefault();
+    m_rightFollower.configFactoryDefault();
 
     m_leftFollower.follow(m_leftMotor);
-    m_rightfollower.follow(m_rightMotor);
+    m_rightFollower.follow(m_rightMotor);
 
     //! Will need to be adjusted until we're going the right direction
     m_leftMotor.setInverted(false);
     m_rightMotor.setInverted(true);
 
     m_leftFollower.setInverted(InvertType.FollowMaster);
-    m_rightfollower.setInverted(InvertType.FollowMaster);
+    m_rightFollower.setInverted(InvertType.FollowMaster);
 
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
