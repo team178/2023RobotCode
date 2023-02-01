@@ -62,12 +62,16 @@ public final class Constants {
 
   }
 
+  public static class ClawConstants {
+    public static final int kFwdChannel = 0; // might need to change
+    public static final int kRevChannel = 1; // might need to change
+  }
+  
   public static class ArmConstants {
     public static final int kLowerMotorPort = 20;
     public static final int kUpperMotorPort = 21;
 
     public static final int kLowerHomePort = 0;
     public static final int kUpperHomePort = 1;
-
   }
 }
