@@ -18,13 +18,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -45,6 +50,7 @@ public class Drivetrain extends SubsystemBase {
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV, DriveConstants.kA);
 
   private final Field2d m_field = new Field2d();
+  private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
   /* Creates a new Drivetrain. */
   public Drivetrain() {
@@ -80,6 +86,8 @@ public class Drivetrain extends SubsystemBase {
       getRightEncoderPositionMeters(),
       new Pose2d()
     );
+
+    m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
   }
 
   public void resetGyro() {
@@ -182,9 +190,10 @@ public class Drivetrain extends SubsystemBase {
   
   public Command arcadeDrive(DoubleSupplier forward, DoubleSupplier rot, double deadzone) {
     return this.run(() -> {
+      //! Limiting speeds here, should be moved to preferences
       arcadeDrive(
-          MathUtil.applyDeadband(forward.getAsDouble(), deadzone),
-          MathUtil.applyDeadband(rot.getAsDouble(), deadzone)
+          MathUtil.applyDeadband(forward.getAsDouble(), deadzone) * 0.1,
+          MathUtil.applyDeadband(rot.getAsDouble(), deadzone) * 0.3
           );
     }).repeatedly();
   }
@@ -200,7 +209,30 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     m_poseEstimator.update(getGyroRotation(), getRightEncoderPositionMeters(), getRightEncoderPositionMeters());
+    
+    
+    if (m_limelight.containsKey("botpose")) {
+      double[] botposeEntry = m_limelight.getEntry("botpose").getDoubleArray(new double[1]);
+
+      if (botposeEntry.length > 0) {
+        // The pose from limelight for some reason has it's orign in the middle of the field instead
+        // of the bottom left like the WPILib pose estimator, so we have to account for that
+        Pose2d botpose = new Pose2d(
+            botposeEntry[0] + FieldConstants.kFieldLength / 2,
+            botposeEntry[1] + FieldConstants.kFieldWidth / 2,
+            Rotation2d.fromDegrees(botposeEntry[5]));
+
+        m_poseEstimator.addVisionMeasurement(
+            botpose,
+            Timer.getFPGATimestamp()
+        );
+      }
+    }
+    
     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
+
+    SmartDashboard.putData(m_field);
+    SmartDashboard.putData(m_gyro);
   }
 
   @Override

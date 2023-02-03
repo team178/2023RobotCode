@@ -25,7 +25,9 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/ADXRS450_Gyro[0]": "Gyro",
+      "/SmartDashboard/Field": "Field2d"
     }
   }
 }

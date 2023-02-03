@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
@@ -14,8 +16,20 @@ import edu.wpi.first.math.util.Units;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
+ * 
+ * CAN ID "groups":
+ * I'm organizing each subsystem to be organized into groups.
+ * 
+ * 1x - Drivetrain
+ * 2x - Arm
  */
 public final class Constants {
+  public static class FieldConstants {
+    public static final double kFieldWidth = Units.inchesToMeters((26 * 12) + 3.5);
+    public static final double kFieldLength = Units.inchesToMeters((54 * 12) + 3.25);
+  }
+
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kAuxControllerPort = 1;
@@ -60,11 +74,20 @@ public final class Constants {
 
     public static final double kPVel = 1;
 
+    public static final Matrix<N3, N1> kVisionTrustMatrix = m_createVisionTrustMatrix();
+
+    private static Matrix<N3, N1> m_createVisionTrustMatrix() {
+      Matrix<N3, N1> matrix = new Matrix<N3, N1>(N3.instance, N1.instance);
+      matrix.set(0, 0, 3); // X
+      matrix.set(1, 0, 3); // Y
+      matrix.set(2, 0, 3); // Theta
+      return matrix;
+    }
   }
 
   public static class ClawConstants {
-    public static final int kFwdChannel = 0; // might need to change
-    public static final int kRevChannel = 1; // might need to change
+    public static final int kFwdChannel = 0;
+    public static final int kRevChannel = 1;
   }
   
   public static class ArmConstants {

@@ -85,6 +85,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("TestPath", new PathConstraints(1, 3));
-    return m_autoBuilder.fullAuto(pathGroup); //! will probably error at some point and we won't know why
+    return m_autoBuilder.fullAuto(pathGroup);
   }
 }
