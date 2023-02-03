@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
-    private DoubleSolenoid m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, ClawConstants.kFwdChannel, ClawConstants.kRevChannel);
+    private DoubleSolenoid m_solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, ClawConstants.kFwdChannel, ClawConstants.kRevChannel);
 
     public Claw() {
         m_solenoid.set(Value.kForward); // might need change depending on what desired starting value should be
