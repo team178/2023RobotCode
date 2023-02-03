@@ -58,6 +58,9 @@ public class Drivetrain extends SubsystemBase {
     m_leftFollower.follow(m_leftMotor);
     m_rightFollower.follow(m_rightMotor);
 
+    m_leftFollower.setSensorPhase(false);
+    m_rightFollower.setSensorPhase(false);
+
     //! Will need to be adjusted until we're going the right direction
     m_leftMotor.setInverted(false);
     m_rightMotor.setInverted(true);
@@ -67,6 +70,8 @@ public class Drivetrain extends SubsystemBase {
 
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    calibrateGyro();
 
     m_poseEstimator = new DifferentialDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -79,6 +84,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetGyro() {
     m_gyro.reset();
+  }
+
+  public void calibrateGyro() {
+    m_gyro.calibrate();
   }
   
   public void resetEncoders() {
@@ -159,11 +168,15 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setWheelSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
-    final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
+    setWheelSpeeds(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
+  }
 
-    final double leftOutput = m_leftPIDController.calculate(getLeftEncoderVelocityMeters(), speeds.leftMetersPerSecond);
-    final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocityMeters(), speeds.rightMetersPerSecond);
+  public void setWheelSpeeds(double leftSpeed, double rightSpeed) {
+    final double leftFeedforward = m_feedforward.calculate(leftSpeed);
+    final double rightFeedforward = m_feedforward.calculate(rightSpeed);
+
+    final double leftOutput = m_leftPIDController.calculate(getLeftEncoderVelocityMeters(), leftSpeed);
+    final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocityMeters(), rightSpeed);
     tankDriveVolts(leftOutput + leftFeedforward, rightOutput + rightFeedforward);
   }
   
@@ -178,7 +191,7 @@ public class Drivetrain extends SubsystemBase {
   
   public void arcadeDrive(double forward, double rot) {
     var wheelSpeeds = DriveConstants.kDriveKinematics.toWheelSpeeds(
-      new ChassisSpeeds(forward, 0.0, rot)
+      new ChassisSpeeds(-forward, 0.0, -rot)
     );
     setWheelSpeeds(wheelSpeeds);
   }
