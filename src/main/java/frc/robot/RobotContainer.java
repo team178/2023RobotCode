@@ -8,6 +8,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LowerArm;
+import frc.robot.subsystems.UpperArm;
 
 import java.util.List;
 
@@ -32,6 +34,9 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
+
+  private final UpperArm m_upperArm = new UpperArm();
+  private final LowerArm m_lowerArm = new LowerArm();
 
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -72,6 +77,16 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+
+    // "Home" triggers
+    new Trigger(m_lowerArm::isHome)
+        .debounce(0.1)
+        .onTrue(m_lowerArm.resetEncoderCommand());
+
+    new Trigger(m_upperArm::isHome)
+        .debounce(0.1)
+        .onTrue(m_upperArm.resetEncoderCommand());
 
     m_drivetrain.setDefaultCommand(
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightY, 0.2)

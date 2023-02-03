@@ -1,6 +1,21 @@
 {
   "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
+      "SPARK MAX [20]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [21]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX[1]": {
         "header": {
           "open": true
