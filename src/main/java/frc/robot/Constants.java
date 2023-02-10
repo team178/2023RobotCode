@@ -8,6 +8,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleArrayTopic;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -96,5 +97,8 @@ public final class Constants {
 
     public static final int kLowerHomePort = 0;
     public static final int kUpperHomePort = 1;
+
+    public static final int kLowerArmEncoder = 2;
+    public static final int kUpperArmEncoder = 3;
   }
 }

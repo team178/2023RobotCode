@@ -5,42 +5,39 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
 public class UpperArm extends SubsystemBase {
   
-  //! May not be a NEO, if it is, changed to kBrushless
-  private CANSparkMax m_motor = new CANSparkMax(ArmConstants.kUpperMotorPort, MotorType.kBrushed);
+  private CANSparkMax m_motor = new CANSparkMax(ArmConstants.kUpperMotorPort, MotorType.kBrushless);
   private DigitalInput m_home = new DigitalInput(ArmConstants.kUpperHomePort);
-  private RelativeEncoder m_encoder;
-  private SparkMaxPIDController m_controller;
+  private DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.kUpperArmEncoder);
 
   public UpperArm() {
-
     m_motor.restoreFactoryDefaults();
-
-    m_encoder = m_motor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 4096);
-    m_controller = m_motor.getPIDController();
-
-    m_controller.setP(0.1);
-    m_controller.setI(0);
-    m_controller.setD(0);
-    m_controller.setIZone(0);
-    m_controller.setFF(0);
-    m_controller.setOutputRange(-1, 1);
+    m_motor.setIdleMode(IdleMode.kBrake);
   }
 
+  public void setBrake() {
+    m_motor.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setCoast() {
+    m_motor.setIdleMode(IdleMode.kCoast);
+  }
+  
+  /*
+   * Offset encoder back to zero
+   */
   public void resetEncoder() {
-    m_encoder.setPosition(0);
-    setPosition(0);
+    m_encoder.setPositionOffset(getPosition());
   }
   
   public CommandBase resetEncoderCommand() {
@@ -53,12 +50,8 @@ public class UpperArm extends SubsystemBase {
     return m_home.get();
   }
 
-  public void setPosition(double rotations) {
-    m_controller.setReference(rotations, CANSparkMax.ControlType.kPosition);
-  }
-
   public double getPosition() {
-    return m_encoder.getPosition();
+    return m_encoder.getAbsolutePosition();
   }
 
   @Override
