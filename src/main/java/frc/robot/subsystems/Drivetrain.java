@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -61,13 +62,18 @@ public class Drivetrain extends SubsystemBase {
     m_rightMotor.configFactoryDefault();
     m_rightFollower.configFactoryDefault();
 
+    m_leftMotor.setNeutralMode(NeutralMode.Brake);
+    m_leftFollower.setNeutralMode(NeutralMode.Brake);
+
+    m_rightMotor.setNeutralMode(NeutralMode.Brake);
+    m_rightFollower.setNeutralMode(NeutralMode.Brake);
+
     m_leftFollower.follow(m_leftMotor);
     m_rightFollower.follow(m_rightMotor);
 
     m_leftFollower.setSensorPhase(false);
     m_rightFollower.setSensorPhase(false);
 
-    //! Will need to be adjusted until we're going the right direction
     m_leftMotor.setInverted(false);
     m_rightMotor.setInverted(true);
 
