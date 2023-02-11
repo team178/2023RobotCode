@@ -8,19 +8,41 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants.ArmConstants;
 
-public class LowerArm extends SubsystemBase {
+public class LowerArm extends ProfiledPIDSubsystem {
   
   private CANSparkMax m_motor = new CANSparkMax(ArmConstants.kLowerMotorPort, MotorType.kBrushless);
-  private DigitalInput m_home = new DigitalInput(ArmConstants.kUpperHomePort);
-  private DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.kUpperArmEncoder);
+  private DigitalInput m_home = new DigitalInput(ArmConstants.kLowerHomePort);
+  private DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.kLowerArmEncoder);
+
+  private ArmFeedforward m_feedforward =
+      new ArmFeedforward(
+          ArmConstants.kLowerSVolts, ArmConstants.kLowerGVolts,
+          ArmConstants.kLowerVVoltSecPerRad, ArmConstants.kLowerVVoltSecPerRadSquared
+      );
 
   public LowerArm() {
+    super(
+      new ProfiledPIDController(
+        ArmConstants.kLowerArmP,
+        0,
+        0,
+        new TrapezoidProfile.Constraints(
+          ArmConstants.kLowerMaxRadsPerSec,
+          ArmConstants.kLowerMaxRadsPerSecSquared
+        )
+      ),
+        0);
+    
     m_motor.restoreFactoryDefaults();
     m_motor.setIdleMode(IdleMode.kBrake);
   }
@@ -42,7 +64,12 @@ public class LowerArm extends SubsystemBase {
   
   public CommandBase resetEncoderCommand() {
     return this.runOnce(
-      () -> this.resetEncoder()
+        () -> this.resetEncoder());
+  }
+  
+  public CommandBase setGoalCommand(double goal) {
+    return this.runOnce(
+        () -> this.setGoal(goal)
     );
   }
 
@@ -62,5 +89,19 @@ public class LowerArm extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  @Override
+  protected void useOutput(double output, State setpoint) {
+    
+    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
+
+    m_motor.setVoltage(output + feedforward);
+    
+  }
+
+  @Override
+  protected double getMeasurement() {
+    return getPosition() + ArmConstants.kLowerOffsetRads;
   }
 }

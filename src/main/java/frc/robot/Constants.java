@@ -100,5 +100,28 @@ public final class Constants {
 
     public static final int kLowerArmEncoder = 2;
     public static final int kUpperArmEncoder = 3;
+    
+    // Upper arm
+    public static double kUpperOffsetRads = 0;
+    public static double kUpperMaxRadsPerSec = 0;
+    public static double kUpperMaxRadsPerSecSquared = 0;
+
+    public static double kUpperArmP = 0;    
+    public static double kUpperSVolts = 0;
+    public static double kUpperGVolts = 0;
+    public static double kUpperVVoltSecPerRad = 0;
+    public static double kUpperVVoltSecPerRadSquared = 0;
+    
+    // Lower arm
+    public static double kLowerMaxRadsPerSec = 0;
+    public static double kLowerMaxRadsPerSecSquared = 0;
+    public static double kLowerOffsetRads = 0;
+
+    public static double kLowerSVolts = 0;
+    public static double kLowerGVolts = 0;
+    public static double kLowerVVoltSecPerRad = 0;
+    public static double kLowerVVoltSecPerRadSquared = 0;
+
+    public static double kLowerArmP = 0;    
   }
 }
