@@ -196,10 +196,9 @@ public class Drivetrain extends SubsystemBase {
   
   public Command arcadeDrive(DoubleSupplier forward, DoubleSupplier rot, double deadzone) {
     return this.run(() -> {
-      //! Limiting speeds here, should be moved to preferences
       arcadeDrive(
-          MathUtil.applyDeadband(forward.getAsDouble(), deadzone) * 0.1,
-          MathUtil.applyDeadband(rot.getAsDouble(), deadzone) * 0.3
+          MathUtil.applyDeadband(forward.getAsDouble(), deadzone) * DriveConstants.kMaxSpeedMetersPerSecond,
+          MathUtil.applyDeadband(rot.getAsDouble(), deadzone) * DriveConstants.kMaxRotationSpeedMetersPerSecond
           );
     }).repeatedly();
   }

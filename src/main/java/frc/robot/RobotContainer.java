@@ -117,7 +117,7 @@ public class RobotContainer {
         .onTrue(m_upperArm.resetEncoderCommand());
 
     m_drivetrain.setDefaultCommand(
-        m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightY, 0.2)
+        m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
   }
 

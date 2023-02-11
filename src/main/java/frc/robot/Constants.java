@@ -69,6 +69,9 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(21);
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
+    public static final double kMaxSpeedMetersPerSecond = 3.0;
+    public static final double kMaxRotationSpeedMetersPerSecond = 3.0;
+
     public static final double kS = 1; //! Need to be tuned
     public static final double kV = 3;
     public static final double kA = 1;
