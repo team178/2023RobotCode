@@ -20,6 +20,13 @@ import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -51,13 +58,34 @@ public class RobotContainer {
     m_drivetrain
   );
 
+  private MechanismLigament2d m_lowerArm2d;
+  private MechanismLigament2d m_upperArm2d;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     PathPlannerServer.startServer(5811);
 
+    m_lowerArm.disable();
+    m_upperArm.disable();
+
     // Configure the trigger bindings
     configureBindings();
+
+    Mechanism2d armMech = new Mechanism2d(100, 60);
+    MechanismRoot2d armRoot = armMech.getRoot("armPivot", 60, 15);
+    armRoot.append(new MechanismLigament2d("Pylon", 15, -90, 6, new Color8Bit(0, 0, 255)));
+    m_lowerArm2d = armRoot.append(
+        new MechanismLigament2d("LowerArm", 28, -13));
+    m_upperArm2d = m_lowerArm2d.append(
+        new MechanismLigament2d("UpperArm", 28, 90));
+
+    SmartDashboard.putData("ArmMech2d", armMech);
+  }
+  
+  public void updateMech2d() {
+    m_lowerArm2d.setAngle(Units.radiansToDegrees(m_lowerArm.getPosition()));
+    m_upperArm2d.setAngle(Units.radiansToDegrees(m_upperArm.getPosition()));
   }
 
   /**
