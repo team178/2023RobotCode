@@ -84,8 +84,10 @@ public class RobotContainer {
   }
   
   public void updateMech2d() {
-    m_lowerArm2d.setAngle(Units.radiansToDegrees(m_lowerArm.getPosition()));
-    m_upperArm2d.setAngle(Units.radiansToDegrees(m_upperArm.getPosition()));
+    m_lowerArm2d.setAngle(180 + Units.radiansToDegrees(m_lowerArm.getPosition()));
+    m_upperArm2d.setAngle(180 - Units.radiansToDegrees(m_upperArm.getPosition()));
+    SmartDashboard.putNumber("lower", m_lowerArm.getPosition());
+    
   }
 
   /**
@@ -106,19 +108,12 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-
-    // "Home" triggers
-    new Trigger(m_lowerArm::isHome)
-        .debounce(0.1)
-        .onTrue(m_lowerArm.resetEncoderCommand());
-
-    new Trigger(m_upperArm::isHome)
-        .debounce(0.1)
-        .onTrue(m_upperArm.resetEncoderCommand());
-
     m_drivetrain.setDefaultCommand(
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
+
+    m_lowerArm.setCoast();
+    m_upperArm.setCoast();
   }
 
   /**

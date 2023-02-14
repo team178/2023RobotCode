@@ -12,8 +12,10 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants.ArmConstants;
@@ -45,6 +47,8 @@ public class UpperArm extends ProfiledPIDSubsystem {
     
     m_motor.restoreFactoryDefaults();
     m_motor.setIdleMode(IdleMode.kBrake);
+    m_encoder.setDistancePerRotation(2 * Math.PI);
+    resetEncoder();
   }
 
   public void setBrake() {
@@ -59,7 +63,7 @@ public class UpperArm extends ProfiledPIDSubsystem {
    * Offset encoder back to zero
    */
   public void resetEncoder() {
-    m_encoder.setPositionOffset(getPosition());
+    m_encoder.reset();
   }
   
   public CommandBase resetEncoderCommand() {
@@ -74,16 +78,23 @@ public class UpperArm extends ProfiledPIDSubsystem {
   }
 
   public boolean isHome() {
-    return m_home.get();
+    return !m_home.get();
   }
 
   public double getPosition() {
-    return m_encoder.getAbsolutePosition();
+    return m_encoder.getDistance();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("upper", getPosition());
+    SmartDashboard.putBoolean("ishomeupper", isHome());
+
+    if (isHome()) {
+      resetEncoder();
+      m_encoder.setPositionOffset(Units.degreesToRadians(-14));
+    }
   }
 
   @Override

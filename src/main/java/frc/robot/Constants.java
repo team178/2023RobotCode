@@ -101,8 +101,8 @@ public final class Constants {
     public static final int kLowerHomePort = 0;
     public static final int kUpperHomePort = 1;
 
-    public static final int kLowerArmEncoder = 2;
-    public static final int kUpperArmEncoder = 3;
+    public static final int kLowerArmEncoder = 7;
+    public static final int kUpperArmEncoder = 8;
     
     // Upper arm
     public static double kUpperOffsetRads = 0;
