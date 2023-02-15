@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -66,7 +67,6 @@ public class RobotContainer {
 
     PathPlannerServer.startServer(5811);
 
-    m_lowerArm.disable();
     m_upperArm.disable();
 
     // Configure the trigger bindings
@@ -87,7 +87,7 @@ public class RobotContainer {
     m_lowerArm2d.setAngle(180 + Units.radiansToDegrees(m_lowerArm.getPosition()));
     m_upperArm2d.setAngle(180 - Units.radiansToDegrees(m_upperArm.getPosition()));
     SmartDashboard.putNumber("lower", m_lowerArm.getPosition());
-    
+    // SmartDashboard.putData("lower ", m_lowerArm.getController());
   }
 
   /**
@@ -111,9 +111,12 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
+    // m_lowerArm.enable();
+    m_lowerArm.setGoal(-0.647781);
+    // m_lowerArm.getController().setGoal(-1.247030);
 
-    m_lowerArm.setCoast();
-    m_upperArm.setCoast();
+    m_lowerArm.setBrake();
+    m_upperArm.setBrake();
   }
 
   /**

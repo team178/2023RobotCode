@@ -120,11 +120,11 @@ public final class Constants {
     public static double kLowerMaxRadsPerSec = 0.1;
     public static double kLowerMaxRadsPerSecSquared = 0.1;
 
-    public static double kLowerSVolts = 0;
-    public static double kLowerGVolts = 0;
-    public static double kLowerVVoltSecPerRad = 0;
-    public static double kLowerVVoltSecPerRadSquared = 0;
+    public static double kLowerSVolts = 0.38834;
+    public static double kLowerGVolts = 0.77742;
+    public static double kLowerVVoltSecPerRad = 2.0427;
+    public static double kLowerVVoltSecPerRadSquared = 0.23556;
 
-    public static double kLowerArmP = 0;    
+    public static double kLowerArmP = 0.1;    
   }
 }
