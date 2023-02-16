@@ -103,14 +103,13 @@ public class LowerArm extends SubsystemBase {
       m_encoder.setPositionOffset(Units.degreesToRadians(-8));
     }
 
-    double feedforward = m_feedforward.calculate(m_controller.getSetpoint(), 0.5);
+    double feedforward = m_feedforward.calculate(m_controller.getSetpoint(), 0);
 
-    double output = (-0.647781 - getPosition()) * 1;
+    double output = -m_controller.calculate(getPosition());
 
-    SmartDashboard.putNumber("Setpoint", -0.647781);
+    SmartDashboard.putNumber("Setpoint", m_controller.getSetpoint());
     SmartDashboard.putNumber("OUTPUT_LOWER", output);
     SmartDashboard.putNumber("OUTPUT_LOWER_FF", output + feedforward);
-
 
     m_motor.setVoltage(output + feedforward);
   }

@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -18,13 +19,16 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
-public class UpperArm extends ProfiledPIDSubsystem {
+public class UpperArm extends SubsystemBase {
   
   private CANSparkMax m_motor = new CANSparkMax(ArmConstants.kUpperMotorPort, MotorType.kBrushless);
   private DigitalInput m_home = new DigitalInput(ArmConstants.kUpperHomePort);
   private DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.kUpperArmEncoder);
+
+  private PIDController m_controller = new PIDController(ArmConstants.kUpperArmP, 0, 0);
 
   private ArmFeedforward m_feedforward =
       new ArmFeedforward(
@@ -33,22 +37,22 @@ public class UpperArm extends ProfiledPIDSubsystem {
       );
 
   public UpperArm() {
-    super(
-      new ProfiledPIDController(
-        ArmConstants.kUpperArmP,
-        0,
-        0,
-        new TrapezoidProfile.Constraints(
-          ArmConstants.kUpperMaxRadsPerSec,
-          ArmConstants.kUpperMaxRadsPerSecSquared
-        )
-      ),
-        0);
+    // super(
+    //   new ProfiledPIDController(
+    //     ArmConstants.kUpperArmP,
+    //     0,
+    //     0,
+    //     new TrapezoidProfile.Constraints(
+    //       ArmConstants.kUpperMaxRadsPerSec,
+    //       ArmConstants.kUpperMaxRadsPerSecSquared
+    //     )
+    //   ),
+    //   Units.degreesToRadians(-8));
     
     m_motor.restoreFactoryDefaults();
     m_motor.setIdleMode(IdleMode.kBrake);
+    m_motor.setInverted(true);
     m_encoder.setDistancePerRotation(2 * Math.PI);
-    resetEncoder();
   }
 
   public void setBrake() {
@@ -64,16 +68,21 @@ public class UpperArm extends ProfiledPIDSubsystem {
    */
   public void resetEncoder() {
     m_encoder.reset();
+    // setGoal(m_encoder.getDistance());
   }
   
   public CommandBase resetEncoderCommand() {
     return this.runOnce(
         () -> this.resetEncoder());
   }
+
+  public void setGoal(double goal) {
+    m_controller.setSetpoint(goal);
+  }
   
   public CommandBase setGoalCommand(double goal) {
     return this.runOnce(
-        () -> this.setGoal(goal)
+        () -> m_controller.setSetpoint(goal)
     );
   }
 
@@ -88,13 +97,21 @@ public class UpperArm extends ProfiledPIDSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("upper", getPosition());
-    SmartDashboard.putBoolean("ishomeupper", isHome());
-
     if (isHome()) {
       resetEncoder();
+      //! somehow this works but it's not how it's supposed to work
       m_encoder.setPositionOffset(Units.degreesToRadians(-14));
     }
+
+    double feedforward = m_feedforward.calculate(m_controller.getSetpoint(), 0);
+
+    double output = -m_controller.calculate(getPosition());
+
+    SmartDashboard.putNumber("Setpoint", m_controller.getSetpoint());
+    SmartDashboard.putNumber("OUTPUT_Upper", output);
+    SmartDashboard.putNumber("OUTPUT_Upper_FF", output + feedforward);
+
+    m_motor.setVoltage(output + feedforward);
   }
 
   @Override
@@ -102,16 +119,6 @@ public class UpperArm extends ProfiledPIDSubsystem {
     // This method will be called once per scheduler run during simulation
   }
 
-  @Override
-  protected void useOutput(double output, State setpoint) {
-    
-    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
-
-    m_motor.setVoltage(output + feedforward);
-    
-  }
-
-  @Override
   protected double getMeasurement() {
     return getPosition() + ArmConstants.kUpperOffsetRads;
   }
