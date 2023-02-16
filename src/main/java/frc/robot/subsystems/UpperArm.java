@@ -111,7 +111,11 @@ public class UpperArm extends SubsystemBase {
     SmartDashboard.putNumber("OUTPUT_Upper", output);
     SmartDashboard.putNumber("OUTPUT_Upper_FF", output + feedforward);
 
-    m_motor.setVoltage(output + feedforward);
+    if (output < 0 && isHome()) {
+      m_motor.setVoltage(0);
+    } else {
+      m_motor.setVoltage(output + feedforward);
+    }
   }
 
   @Override

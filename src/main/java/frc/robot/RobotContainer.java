@@ -110,8 +110,25 @@ public class RobotContainer {
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getLeftY, 0.2)
     );
     // m_lowerArm.enable();
-    m_lowerArm.setGoal(-1.979749);
-    m_upperArm.setGoal(3.787933);
+
+    m_lowerArm.setGoal(0.153306);
+    m_upperArm.setGoal(5.999611);
+
+    m_driverController.a().onTrue(
+      Commands.run(() -> {
+        m_lowerArm.setGoal(-1.979749);
+        m_upperArm.setGoal(3.787933);
+        System.out.println("a");
+      })
+    );
+
+    m_driverController.b().onTrue(
+      Commands.run(() -> {
+        m_lowerArm.setGoal(0.153306);
+        m_upperArm.setGoal(5.999611);
+        System.out.println("b");
+      })
+    );
 
     m_lowerArm.setBrake();
     m_upperArm.setBrake();
