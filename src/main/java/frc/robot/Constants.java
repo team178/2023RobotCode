@@ -90,8 +90,7 @@ public final class Constants {
   }
 
   public static class ClawConstants {
-    public static final int kFwdChannel = 0;
-    public static final int kRevChannel = 1;
+    public static int kChannel = 6;
   }
   
   public static class ArmConstants {

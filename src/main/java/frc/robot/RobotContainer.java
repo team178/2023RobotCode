@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LowerArm;
 import frc.robot.subsystems.UpperArm;
@@ -46,8 +47,13 @@ public class RobotContainer {
   private final UpperArm m_upperArm = new UpperArm();
   private final LowerArm m_lowerArm = new LowerArm();
 
+  private final Claw m_claw = new Claw();
+
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  private final CommandXboxController m_auxBox =
+      new CommandXboxController(OperatorConstants.kAuxControllerPort);
     
   private final RamseteAutoBuilder m_autoBuilder = new RamseteAutoBuilder(
     m_drivetrain::getEstimatedPosition,
@@ -79,6 +85,12 @@ public class RobotContainer {
         new MechanismLigament2d("UpperArm", 28, 90));
 
     SmartDashboard.putData("ArmMech2d", armMech);
+
+    m_lowerArm.setGoal(0.153306);
+    m_upperArm.setGoal(5.999611);
+
+    m_lowerArm.setBrake();
+    m_upperArm.setBrake();
   }
   
   public void updateMech2d() {
@@ -107,29 +119,28 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     m_drivetrain.setDefaultCommand(
-        m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getLeftY, 0.2)
+        m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
-    // m_lowerArm.enable();
 
-    m_lowerArm.setGoal(0.153306);
-    m_upperArm.setGoal(5.999611);
-
-    m_driverController.a().onTrue(
+    m_auxBox.a().onTrue(
       Commands.runOnce(() -> {
         m_lowerArm.setGoal(-1.979749);
         m_upperArm.setGoal(3.787933);
       })
     );
 
-    m_driverController.b().onTrue(
+    m_auxBox.b().onTrue(
       Commands.runOnce(() -> {
         m_lowerArm.setGoal(0.353306);
         m_upperArm.setGoal(5.999611);
       })
     );
 
-    m_lowerArm.setBrake();
-    m_upperArm.setBrake();
+    m_auxBox.x().onTrue(
+      Commands.runOnce(() -> {
+        m_claw.toggle();
+      })
+    );
   }
 
   public void onDisable() {
