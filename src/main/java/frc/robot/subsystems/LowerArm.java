@@ -28,7 +28,7 @@ public class LowerArm extends SubsystemBase {
   private DigitalInput m_home = new DigitalInput(ArmConstants.kLowerHomePort);
   private DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.kLowerArmEncoder);
 
-  private PIDController m_controller = new PIDController(ArmConstants.kLowerArmP, 0, 0);
+  private PIDController m_controller = new PIDController(ArmConstants.kLowerArmP, 0,0);
 
   private ArmFeedforward m_feedforward =
       new ArmFeedforward(
