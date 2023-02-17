@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LowerArm;
+import frc.robot.subsystems.Pulse;
 import frc.robot.subsystems.UpperArm;
 
 import java.util.List;
@@ -26,7 +27,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,7 +43,8 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
-
+  // public final Pulse m_pulse = new Pulse();
+  
   private final UpperArm m_upperArm = new UpperArm();
   private final LowerArm m_lowerArm = new LowerArm();
 
@@ -141,6 +142,10 @@ public class RobotContainer {
         m_claw.toggle();
       })
     );
+
+    // m_driverController.y().onTrue(m_pulse.runLightsOff());
+    // m_driverController.x().onTrue(m_pulse.runRedBlue());
+    // m_driverController.x().onFalse(m_pulse.runLightsOff());
   }
 
   public void onDisable() {
