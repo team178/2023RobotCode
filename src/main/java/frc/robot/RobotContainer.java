@@ -123,6 +123,14 @@ public class RobotContainer {
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
 
+    new Trigger(m_lowerArm::isHome)
+      .whileTrue(
+        Commands.run(() -> m_drivetrain.setSpeedMult(1))
+      )
+      .whileFalse(
+        Commands.run(() -> m_drivetrain.setSpeedMult(0.3))
+      );
+
     m_auxBox.a().onTrue(
       Commands.runOnce(() -> {
         m_lowerArm.setGoal(-1.979749);

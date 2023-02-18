@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -33,10 +34,10 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 
 public class Drivetrain extends SubsystemBase {
-  
+
   private final SPI.Port sPort = SPI.Port.kOnboardCS0;
   private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro(sPort);
-    
+
   private WPI_TalonFX m_leftMotor = new WPI_TalonFX(DriveConstants.kL1MotorPort);
   private WPI_TalonFX m_leftFollower = new WPI_TalonFX(DriveConstants.kL2MotorPort);
 
@@ -47,11 +48,17 @@ public class Drivetrain extends SubsystemBase {
 
   private final PIDController m_leftPIDController = new PIDController(DriveConstants.kPVel, 0, 0);
   private final PIDController m_rightPIDController = new PIDController(DriveConstants.kPVel, 0, 0);
-  
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV, DriveConstants.kA);
+
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV,
+      DriveConstants.kA);
 
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
+
+  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(0.5);
+
+  private double m_speedMult = 1;
 
   /* Creates a new Drivetrain. */
   public Drivetrain() {
@@ -86,12 +93,11 @@ public class Drivetrain extends SubsystemBase {
     calibrateGyro();
 
     m_poseEstimator = new DifferentialDrivePoseEstimator(
-      DriveConstants.kDriveKinematics,
-      getGyroRotation(),
-      getLeftEncoderPositionMeters(),
-      getRightEncoderPositionMeters(),
-      new Pose2d()
-    );
+        DriveConstants.kDriveKinematics,
+        getGyroRotation(),
+        getLeftEncoderPositionMeters(),
+        getRightEncoderPositionMeters(),
+        new Pose2d());
 
     m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
   }
@@ -103,10 +109,21 @@ public class Drivetrain extends SubsystemBase {
   public void calibrateGyro() {
     m_gyro.calibrate();
   }
-  
+
   public void resetEncoders() {
     m_leftMotor.setSelectedSensorPosition(0);
     m_rightMotor.setSelectedSensorPosition(0);
+  }
+
+  /*
+   * Multiplier (technically a divider but whatever) for the drivetrain speed
+   * `speed` should be a number between 0.0 and 1.0, which is multiplied by the
+   * max speed in meters per second.
+   * Just meant to be a quick and easy speed multiplier.
+   */
+
+  public void setSpeedMult(double speed) {
+    m_speedMult = MathUtil.clamp(speed, 0.0, 1.0);
   }
 
   public double getGyroHeading() {
@@ -124,7 +141,7 @@ public class Drivetrain extends SubsystemBase {
   public double getLeftEncoderPositionMeters() {
     return talonUnitsToMeters(m_leftMotor.getSelectedSensorPosition());
   }
-  
+
   public double getRightEncoderPosition() {
     return m_rightMotor.getSelectedSensorPosition();
   }
@@ -140,7 +157,7 @@ public class Drivetrain extends SubsystemBase {
   public double getLeftEncoderVelocityMeters() {
     return talonUnitsToMeters(m_leftMotor.getSelectedSensorVelocity());
   }
-  
+
   public double getRightEncoderVelocity() {
     return m_rightMotor.getSelectedSensorVelocity();
   }
@@ -151,9 +168,8 @@ public class Drivetrain extends SubsystemBase {
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-      getLeftEncoderVelocityMeters(),
-      getRightEncoderVelocityMeters()
-    );
+        getLeftEncoderVelocityMeters(),
+        getRightEncoderVelocityMeters());
   }
 
   public Pose2d getEstimatedPosition() {
@@ -165,8 +181,7 @@ public class Drivetrain extends SubsystemBase {
         getGyroRotation(),
         getLeftEncoderPositionMeters(),
         getRightEncoderPositionMeters(),
-        pose
-      );
+        pose);
   }
 
   private double talonUnitsToMeters(double sensorCounts) {
@@ -193,20 +208,22 @@ public class Drivetrain extends SubsystemBase {
     final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocityMeters(), rightSpeed);
     tankDriveVolts(leftOutput + leftFeedforward, rightOutput + rightFeedforward);
   }
-  
+
   public Command arcadeDrive(DoubleSupplier forward, DoubleSupplier rot, double deadzone) {
     return this.run(() -> {
+      double x = MathUtil.applyDeadband(forward.getAsDouble(), deadzone)
+          * (DriveConstants.kMaxSpeedMetersPerSecond * m_speedMult);
+      double z = MathUtil.applyDeadband(rot.getAsDouble(), deadzone)
+          * (DriveConstants.kMaxRotationSpeedMetersPerSecond * m_speedMult);
       arcadeDrive(
-          MathUtil.applyDeadband(forward.getAsDouble(), deadzone) * DriveConstants.kMaxSpeedMetersPerSecond,
-          MathUtil.applyDeadband(rot.getAsDouble(), deadzone) * DriveConstants.kMaxRotationSpeedMetersPerSecond
-          );
+          m_forwardSlew.calculate(x),
+          m_turnSlew.calculate(z));
     }).repeatedly();
   }
-  
+
   public void arcadeDrive(double forward, double rot) {
     var wheelSpeeds = DriveConstants.kDriveKinematics.toWheelSpeeds(
-      new ChassisSpeeds(-forward, 0.0, -rot)
-    );
+        new ChassisSpeeds(-forward, 0.0, -rot));
     setWheelSpeeds(wheelSpeeds);
   }
 
@@ -214,14 +231,15 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     m_poseEstimator.update(getGyroRotation(), getRightEncoderPositionMeters(), getRightEncoderPositionMeters());
-    
-    
+
     if (m_limelight.containsKey("botpose")) {
       double[] botposeEntry = m_limelight.getEntry("botpose").getDoubleArray(new double[1]);
 
       if (botposeEntry.length > 0) {
-        // The pose from limelight for some reason has it's orign in the middle of the field instead
-        // of the bottom left like the WPILib pose estimator, so we have to account for that
+        // The pose from limelight for some reason has it's orign in the middle of the
+        // field instead
+        // of the bottom left like the WPILib pose estimator, so we have to account for
+        // that
         Pose2d botpose = new Pose2d(
             botposeEntry[0] + FieldConstants.kFieldLength / 2,
             botposeEntry[1] + FieldConstants.kFieldWidth / 2,
@@ -229,11 +247,10 @@ public class Drivetrain extends SubsystemBase {
 
         m_poseEstimator.addVisionMeasurement(
             botpose,
-            Timer.getFPGATimestamp()
-        );
+            Timer.getFPGATimestamp());
       }
     }
-    
+
     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
     SmartDashboard.putData(m_field);
