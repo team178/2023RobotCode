@@ -55,8 +55,8 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(3);
 
   private double m_speedMult = 1;
 
@@ -216,8 +216,8 @@ public class Drivetrain extends SubsystemBase {
       double z = MathUtil.applyDeadband(rot.getAsDouble(), deadzone)
           * (DriveConstants.kMaxRotationSpeedMetersPerSecond * m_speedMult);
       arcadeDrive(
-          m_forwardSlew.calculate(x),
-          m_turnSlew.calculate(z));
+          x,
+          z);
     }).repeatedly();
   }
 

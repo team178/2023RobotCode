@@ -10,7 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LowerArm;
-import frc.robot.subsystems.Pulse;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.UpperArm;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
-  // public final Pulse m_pulse = new Pulse();
+  private final Lights m_lights = new Lights();
   
   private final UpperArm m_upperArm = new UpperArm();
   private final LowerArm m_lowerArm = new LowerArm();
@@ -130,30 +130,48 @@ public class RobotContainer {
       .whileFalse(
         Commands.run(() -> m_drivetrain.setSpeedMult(0.3))
       );
-
-    m_auxBox.a().onTrue(
-      Commands.runOnce(() -> {
-        m_lowerArm.setGoal(-1.979749);
-        m_upperArm.setGoal(3.787933);
-      })
-    );
-
+    
+    // Home
     m_auxBox.b().onTrue(
       Commands.runOnce(() -> {
         m_lowerArm.setGoal(0.353306);
         m_upperArm.setGoal(5.999611);
       })
     );
+    
+    // Substation
+    m_auxBox.y().onTrue(
+      Commands.runOnce(() -> {
+        m_lowerArm.setGoal(-0.914104);
+        m_upperArm.setGoal(5.099009);
+      })
+    );
 
+    // Low
+    m_auxBox.a().onTrue(
+      Commands.runOnce(() -> {
+        m_lowerArm.setGoal(-1.452445);
+        m_upperArm.setGoal(4.997419);
+      })
+    );
+
+    // High
     m_auxBox.x().onTrue(
+      Commands.runOnce(() -> {
+        m_lowerArm.setGoal(-2.259555);
+        m_upperArm.setGoal(3.154062);
+      })
+    );
+
+    m_auxBox.leftBumper().onTrue(
       Commands.runOnce(() -> {
         m_claw.toggle();
       })
     );
 
-    // m_driverController.y().onTrue(m_pulse.runLightsOff());
-    // m_driverController.x().onTrue(m_pulse.runRedBlue());
-    // m_driverController.x().onFalse(m_pulse.runLightsOff());
+    m_auxBox.leftStick().onTrue(m_lights.runYellow());
+    m_auxBox.rightStick().onTrue(m_lights.runPurple());
+    m_auxBox.leftTrigger().onFalse(m_lights.runBlue());
   }
 
   public void onDisable() {

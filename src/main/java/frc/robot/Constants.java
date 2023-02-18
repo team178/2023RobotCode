@@ -120,4 +120,9 @@ public final class Constants {
     public static double kLowerVVoltSecPerRad = 2.0427;
     public static double kLowerVVoltSecPerRadSquared = 0.23556;   
   }
+
+  public static class LightConstants {
+    public static final int kLightBarPWMPort = 9;
+    public static final int kLightBarLength = 8;
+  }
 }
