@@ -10,16 +10,13 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.ArmConstants;
 
 public class UpperArm extends SubsystemBase {
@@ -37,17 +34,6 @@ public class UpperArm extends SubsystemBase {
       );
 
   public UpperArm() {
-    // super(
-    //   new ProfiledPIDController(
-    //     ArmConstants.kUpperArmP,
-    //     0,
-    //     0,
-    //     new TrapezoidProfile.Constraints(
-    //       ArmConstants.kUpperMaxRadsPerSec,
-    //       ArmConstants.kUpperMaxRadsPerSecSquared
-    //     )
-    //   ),
-    //   Units.degreesToRadians(-8));
     
     m_motor.restoreFactoryDefaults();
     m_motor.setIdleMode(IdleMode.kBrake);
@@ -121,9 +107,5 @@ public class UpperArm extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-  }
-
-  protected double getMeasurement() {
-    return getPosition() + ArmConstants.kUpperOffsetRads;
   }
 }

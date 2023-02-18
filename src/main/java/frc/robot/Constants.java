@@ -104,9 +104,6 @@ public final class Constants {
     public static final int kUpperArmEncoder = 8;
     
     // Upper arm
-    public static double kUpperOffsetRads = 0;
-    public static double kUpperMaxRadsPerSec = 0.1;
-    public static double kUpperMaxRadsPerSecSquared = 0.1;
 
     public static double kUpperArmP = 3;
     public static double kUpperSVolts = 0.16617;
@@ -114,16 +111,13 @@ public final class Constants {
     public static double kUpperVVoltSecPerRad = 1.944;
     public static double kUpperVVoltSecPerRadSquared = 0.046416;
     
-    // Lower arm
-    public static double kLowerOffsetRads = 0;
-    public static double kLowerMaxRadsPerSec = 0.1;
-    public static double kLowerMaxRadsPerSecSquared = 0.1;
+    // Lower arm 
+    
+    public static double kLowerArmP = 3; 
 
     public static double kLowerSVolts = 0.38834;
     public static double kLowerGVolts = 0.77742;
     public static double kLowerVVoltSecPerRad = 2.0427;
-    public static double kLowerVVoltSecPerRadSquared = 0.23556;
-
-    public static double kLowerArmP = 3;    
+    public static double kLowerVVoltSecPerRadSquared = 0.23556;   
   }
 }
