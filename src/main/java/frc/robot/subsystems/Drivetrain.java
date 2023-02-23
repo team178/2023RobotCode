@@ -55,8 +55,8 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(2);
-  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(10);
+  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(10);
 
   private double m_speedMult = 1;
 
@@ -223,7 +223,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void arcadeDrive(double forward, double rot) {
     var wheelSpeeds = DriveConstants.kDriveKinematics.toWheelSpeeds(
-        new ChassisSpeeds(-forward, 0.0, -rot));
+        new ChassisSpeeds(-m_forwardSlew.calculate(forward), 0.0, -m_turnSlew.calculate(rot)));
     setWheelSpeeds(wheelSpeeds);
   }
 
@@ -255,6 +255,12 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData(m_field);
     SmartDashboard.putData(m_gyro);
+
+    SmartDashboard.putNumber("Left Temp.", m_leftMotor.getTemperature());
+    SmartDashboard.putNumber("Right Temp.", m_rightMotor.getTemperature());
+
+    SmartDashboard.putNumber("Left aTemp.", m_leftFollower.getTemperature());
+    SmartDashboard.putNumber("Right aTemp.", m_rightFollower.getTemperature());
   }
 
   @Override

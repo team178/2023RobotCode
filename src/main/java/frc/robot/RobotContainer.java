@@ -128,7 +128,7 @@ public class RobotContainer {
         Commands.run(() -> m_drivetrain.setSpeedMult(1))
       )
       .whileFalse(
-        Commands.run(() -> m_drivetrain.setSpeedMult(0.3))
+        Commands.run(() -> m_drivetrain.setSpeedMult(0.1))
       );
     
     // Home
