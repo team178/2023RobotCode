@@ -113,10 +113,10 @@ public final class Constants {
     
     // Lower arm 
     
-    public static double kLowerArmP = 3; 
+    public static double kLowerArmP = 3;
 
     public static double kLowerSVolts = 0.38834;
-    public static double kLowerGVolts = 0.77742;
+    public static double kLowerGVolts = 0.0942;
     public static double kLowerVVoltSecPerRad = 2.0427;
     public static double kLowerVVoltSecPerRadSquared = 0.23556;   
   }

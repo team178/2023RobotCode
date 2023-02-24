@@ -87,7 +87,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("ArmMech2d", armMech);
 
-    m_lowerArm.setGoal(0.153306);
+    m_lowerArm.setGoal(0.171531);
     m_upperArm.setGoal(5.999611);
 
     m_lowerArm.setBrake();
@@ -97,7 +97,6 @@ public class RobotContainer {
   public void updateMech2d() {
     m_lowerArm2d.setAngle(180 + Units.radiansToDegrees(m_lowerArm.getPosition()));
     m_upperArm2d.setAngle(180 - Units.radiansToDegrees(m_upperArm.getPosition()));
-    SmartDashboard.putNumber("lower", m_lowerArm.getPosition());
     SmartDashboard.putNumber("upper", m_upperArm.getPosition());
   }
 
@@ -134,7 +133,7 @@ public class RobotContainer {
     // Home
     m_auxBox.b().onTrue(
       Commands.runOnce(() -> {
-        m_lowerArm.setGoal(0.353306);
+        m_lowerArm.setGoal(0.171531);
         m_upperArm.setGoal(5.999611);
       })
     );

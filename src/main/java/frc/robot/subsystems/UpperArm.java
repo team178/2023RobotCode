@@ -85,15 +85,13 @@ public class UpperArm extends SubsystemBase {
     // This method will be called once per scheduler run
     if (isHome()) {
       resetEncoder();
-      //! somehow this works but it's not how it's supposed to work
-      m_encoder.setPositionOffset(Units.degreesToRadians(-14));
     }
 
     double feedforward = m_feedforward.calculate(m_controller.getSetpoint(), 0);
 
     double output = -m_controller.calculate(getPosition());
 
-    SmartDashboard.putNumber("Setpoint", m_controller.getSetpoint());
+    SmartDashboard.putNumber("Setpoint Upper", m_controller.getSetpoint());
     SmartDashboard.putNumber("OUTPUT_Upper", output);
     SmartDashboard.putNumber("OUTPUT_Upper_FF", output + feedforward);
 

@@ -85,15 +85,14 @@ public class LowerArm extends SubsystemBase {
     // This method will be called once per scheduler run
     if (isHome()) {
       resetEncoder();
-      //! somehow this works but it's not how it's supposed to work
-      m_encoder.setPositionOffset(Units.degreesToRadians(-8));
     }
 
     double feedforward = m_feedforward.calculate(m_controller.getSetpoint(), 0);
 
     double output = -m_controller.calculate(getPosition());
 
-    SmartDashboard.putNumber("Setpoint", m_controller.getSetpoint());
+    SmartDashboard.putNumber("lower", getPosition());
+    SmartDashboard.putNumber("Setpoint Lower", m_controller.getSetpoint());
     SmartDashboard.putNumber("OUTPUT_LOWER", output);
     SmartDashboard.putNumber("OUTPUT_LOWER_FF", output + feedforward);
 
