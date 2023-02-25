@@ -74,6 +74,8 @@ public class RobotContainer {
 
     PathPlannerServer.startServer(5811);
 
+    CameraServer.startAutomaticCapture();
+
     // Configure the trigger bindings
     configureBindings();
 
