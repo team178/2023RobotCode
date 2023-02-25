@@ -65,6 +65,16 @@ public class LowerArm extends SubsystemBase {
   public void setGoal(double goal) {
     m_controller.setSetpoint(goal);
   }
+
+  public void bumpGoal(double bump) {
+    setGoal(m_controller.getSetpoint() + bump);
+  }
+
+  public CommandBase bumpGoalCommand(double bump) {
+    return this.run(
+        () -> bumpGoal(bump)
+    );
+  }
   
   public CommandBase setGoalCommand(double goal) {
     return this.runOnce(

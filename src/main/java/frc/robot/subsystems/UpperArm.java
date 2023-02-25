@@ -72,6 +72,16 @@ public class UpperArm extends SubsystemBase {
     );
   }
 
+  public void bumpGoal(double bump) {
+    setGoal(m_controller.getSetpoint() + bump);
+  }
+
+  public CommandBase bumpGoalCommand(double bump) {
+    return this.run(
+        () -> bumpGoal(bump)
+    );
+  }
+
   public boolean isHome() {
     return !m_home.get();
   }
@@ -85,6 +95,8 @@ public class UpperArm extends SubsystemBase {
     // This method will be called once per scheduler run
     if (isHome()) {
       resetEncoder();
+      //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
+      m_encoder.setPositionOffset(Units.degreesToRadians(-14));
     }
 
     double feedforward = m_feedforward.calculate(m_controller.getSetpoint(), 0);

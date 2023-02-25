@@ -69,12 +69,12 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(21);
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
-    public static final double kMaxSpeedMetersPerSecond = 6;
-    public static final double kMaxRotationSpeedMetersPerSecond = 6;
+    public static final double kMaxSpeedMetersPerSecond = 4;
+    public static final double kMaxRotationSpeedMetersPerSecond = 4;
 
-    public static final double kS = 1; //! Need to be tuned
-    public static final double kV = 3;
-    public static final double kA = 1;
+    public static final double kS = 0; //! Need to be tuned
+    public static final double kV = 0;
+    public static final double kA = 0;
 
     public static final double kPVel = 1;
 
@@ -106,7 +106,7 @@ public final class Constants {
     // Upper arm
 
     public static double kUpperArmP = 3;
-    public static double kUpperSVolts = 0.16617;
+    public static double kUpperSVolts = 0.66617;
     public static double kUpperGVolts = 0.085621;
     public static double kUpperVVoltSecPerRad = 1.944;
     public static double kUpperVVoltSecPerRadSquared = 0.046416;

@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     //! maybe remove later
-    m_robotContainer.updateMech2d();
+    m_robotContainer.periodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

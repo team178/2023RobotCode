@@ -55,8 +55,8 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(10);
-  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(10);
+  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(7);
+  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(7);
 
   private double m_speedMult = 1;
 
