@@ -6,12 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmPosition;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.LowerArm;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lights;
-import frc.robot.subsystems.UpperArm;
 
 import java.util.List;
 
@@ -23,14 +23,7 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -47,10 +40,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Lights m_lights = new Lights();
-  
-  private final UpperArm m_upperArm = new UpperArm();
-  private final LowerArm m_lowerArm = new LowerArm();
 
+  private final Arm m_arm = new Arm();
   private final Claw m_claw = new Claw();
 
   private final CommandXboxController m_driverController =
@@ -69,11 +60,6 @@ public class RobotContainer {
     m_drivetrain
   );
 
-  private MechanismLigament2d m_lowerArm2d;
-  private MechanismLigament2d m_upperArm2d;
-
-  private PowerDistribution m_hub = new PowerDistribution(2, ModuleType.kRev);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -83,13 +69,6 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
-    createMech2d();
-
-    m_lowerArm.setGoal(0.171531);
-    m_upperArm.setGoal(5.999611);
-
-    m_lowerArm.setBrake();
-    m_upperArm.setBrake();
   }
 
   /**
@@ -114,46 +93,28 @@ public class RobotContainer {
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
 
-    new Trigger(m_lowerArm::isHome)
+    new Trigger(m_arm::isLowerHome)
       .whileTrue(
         Commands.run(() -> m_drivetrain.setSpeedMult(1))
       )
       .whileFalse(
         Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
-      );
-    
-    // Home
+    );
+
     m_auxBox.b().onTrue(
-      Commands.runOnce(() -> {
-        m_lowerArm.setGoal(0.171531);
-      }).andThen(
-        Commands.waitSeconds(0.2)
-        .andThen(() -> m_upperArm.setGoal(5.999611))
-      )
+      m_arm.setPosition(ArmPosition.HOME)
     );
     
-    // Substation
     m_auxBox.y().onTrue(
-      Commands.runOnce(() -> {
-        m_lowerArm.setGoal(-1.142557);
-        m_upperArm.setGoal(5.177190);
-      })
+      m_arm.setPosition(ArmPosition.SUBSTATION)
     );
 
-    // Low
     m_auxBox.a().onTrue(
-      Commands.runOnce(() -> {
-        m_lowerArm.setGoal(-1.577659);
-        m_upperArm.setGoal(4.489911);
-      })
+      m_arm.setPosition(ArmPosition.LOW)
     );
 
-    // High
     m_auxBox.x().onTrue(
-      Commands.runOnce(() -> {
-        m_lowerArm.setGoal(-2.259555);
-        m_upperArm.setGoal(3.154062);
-      })
+      m_arm.setPosition(ArmPosition.HIGH)
     );
 
     m_auxBox.leftBumper().onTrue(
@@ -162,41 +123,19 @@ public class RobotContainer {
       })
     );
 
-    m_auxBox.povUpLeft().whileTrue(m_lowerArm.bumpGoalCommand(-0.01));
-    m_auxBox.povDownLeft().whileTrue(m_lowerArm.bumpGoalCommand(0.01));
+    m_auxBox.povUpLeft().whileTrue(m_arm.bumpLower(-0.01));
+    m_auxBox.povDownLeft().whileTrue(m_arm.bumpLower(0.01));
 
-    m_auxBox.povUpRight().whileTrue(m_upperArm.bumpGoalCommand(-0.01));
-    m_auxBox.povDownRight().whileTrue(m_upperArm.bumpGoalCommand(0.01));
+    m_auxBox.povUpRight().whileTrue(m_arm.bumpUpper(-0.01));
+    m_auxBox.povDownRight().whileTrue(m_arm.bumpUpper(0.01));
 
     m_auxBox.leftStick().onTrue(m_lights.runYellow());
     m_auxBox.rightStick().onTrue(m_lights.runPurple());
     m_auxBox.leftTrigger().onFalse(m_lights.runBlue());
   }
 
-  public void onDisable() {
-    // m_lowerArm.setCoast();
-    // m_upperArm.setCoast();
-  }
-
   public void periodic() {
-    m_lowerArm2d.setAngle(180 + Units.radiansToDegrees(m_lowerArm.getPosition()));
-    m_upperArm2d.setAngle(180 - Units.radiansToDegrees(m_upperArm.getPosition()));
-
-    SmartDashboard.putNumber("upper", m_upperArm.getPosition());
-
     SmartDashboard.putNumber("Ultrasonic", m_claw.getUltrasonicDistance());
-  }
-
-  public void createMech2d() {
-    Mechanism2d armMech = new Mechanism2d(100, 60);
-    MechanismRoot2d armRoot = armMech.getRoot("armPivot", 60, 15);
-    armRoot.append(new MechanismLigament2d("Pylon", 15, -90, 6, new Color8Bit(0, 0, 255)));
-    m_lowerArm2d = armRoot.append(
-        new MechanismLigament2d("LowerArm", 28, -13));
-    m_upperArm2d = m_lowerArm2d.append(
-        new MechanismLigament2d("UpperArm", 28, 90));
-
-    SmartDashboard.putData("ArmMech2d", armMech);
   }
 
   /**
