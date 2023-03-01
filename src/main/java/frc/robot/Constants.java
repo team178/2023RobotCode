@@ -69,14 +69,14 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(21);
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
-    public static final double kMaxSpeedMetersPerSecond = 4;
-    public static final double kMaxRotationSpeedMetersPerSecond = 4;
+    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxRotationSpeedMetersPerSecond = 3;
 
-    public static final double kS = 0; //! Need to be tuned
-    public static final double kV = 0;
-    public static final double kA = 0;
+    public static final double kS = 1; //! Need to be tuned
+    public static final double kV = 3;
+    public static final double kA = 1;
 
-    public static final double kPVel = 1;
+    public static final double kPVel = 0;
 
     public static final Matrix<N3, N1> kVisionTrustMatrix = m_createVisionTrustMatrix();
 

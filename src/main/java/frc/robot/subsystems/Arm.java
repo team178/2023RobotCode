@@ -54,7 +54,7 @@ public class Arm extends SubsystemBase {
   private MechanismLigament2d m_lowerArm2d;
   private MechanismLigament2d m_upperArm2d;
 
-  private ArmPosition m_position = ArmPosition.HOLD;
+  private ArmPosition m_position = ArmPosition.HOME;
 
    public Arm() {
     m_lowerMotor.restoreFactoryDefaults();
@@ -80,6 +80,9 @@ public class Arm extends SubsystemBase {
         new MechanismLigament2d("UpperArm", 28, 90));
 
     SmartDashboard.putData("ArmMech2d", armMech);
+
+    setLowerPosition(m_position.lower);
+    setUpperPosition(m_position.upper);    
   }
 
   public void setBrake() {
@@ -97,7 +100,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void resetUpperEncoder() {
-    m_lowerEncoder.reset();
+    m_upperEncoder.reset();
   }
 
   public void resetEncoders() {
@@ -146,7 +149,7 @@ public class Arm extends SubsystemBase {
 
   public CommandBase bumpUpper(double bump) {
     return Commands.run(() -> {
-      bumpLowerPosition(bump);
+      bumpUpperPosition(bump);
     });
   }
 
@@ -163,7 +166,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getUpperPosition() {
-    return m_lowerEncoder.getDistance();
+    return m_upperEncoder.getDistance();
   }
 
   @Override
@@ -171,18 +174,20 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     if (isLowerHome()) {
       resetLowerEncoder();
+      //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
+      m_lowerEncoder.setPositionOffset(Units.degreesToRadians(-8));
     }
 
     if (isUpperHome()) {
-      resetUpperEncoder();
+     resetUpperEncoder();
       //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
       m_upperEncoder.setPositionOffset(Units.degreesToRadians(-14));
     }
 
-    if (m_position.equals(ArmPosition.HOLD)) {
-      setLowerPosition(getLowerPosition());
-      setUpperPosition(getUpperPosition());
-    }
+    // if (m_position.equals(ArmPosition.HOLD)) {
+    //   setLowerPosition(getLowerPosition());
+    //   setUpperPosition(getUpperPosition());
+    // }
 
     double lowerFF = m_lowerFeedforward.calculate(m_lowerController.getSetpoint(), 0);
     double upperFF = m_upperFeedforward.calculate(m_upperController.getSetpoint(), 0);

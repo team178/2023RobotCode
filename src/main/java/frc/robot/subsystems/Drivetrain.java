@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -89,6 +90,12 @@ public class Drivetrain extends SubsystemBase {
 
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 40, 40, 0.5);
+    m_leftMotor.configStatorCurrentLimit(cur_limit);
+    m_leftFollower.configStatorCurrentLimit(cur_limit);
+    m_rightMotor.configStatorCurrentLimit(cur_limit);
+    m_rightFollower.configStatorCurrentLimit(cur_limit);
 
     calibrateGyro();
 
@@ -223,7 +230,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void arcadeDrive(double forward, double rot) {
     var wheelSpeeds = DriveConstants.kDriveKinematics.toWheelSpeeds(
-        new ChassisSpeeds(-m_forwardSlew.calculate(forward), 0.0, -m_turnSlew.calculate(rot)));
+        new ChassisSpeeds(-forward, 0.0, -rot));
     setWheelSpeeds(wheelSpeeds);
   }
 
@@ -261,6 +268,12 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("Left aTemp.", m_leftFollower.getTemperature());
     SmartDashboard.putNumber("Right aTemp.", m_rightFollower.getTemperature());
+
+    SmartDashboard.putNumber("LeftCurrent", m_leftMotor.getStatorCurrent());
+    SmartDashboard.putNumber("RightCurrent", m_rightMotor.getStatorCurrent());
+
+    SmartDashboard.putNumber("LeftVolts", m_leftMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("RightVolts",m_leftMotor.getMotorOutputVoltage());
   }
 
   @Override
