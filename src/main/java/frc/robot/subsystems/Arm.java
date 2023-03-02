@@ -175,13 +175,13 @@ public class Arm extends SubsystemBase {
     if (isLowerHome()) {
       resetLowerEncoder();
       //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
-      m_lowerEncoder.setPositionOffset(Units.degreesToRadians(-8));
+      m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8));
     }
 
     if (isUpperHome()) {
      resetUpperEncoder();
       //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
-      m_upperEncoder.setPositionOffset(Units.degreesToRadians(-14));
+      m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
     }
 
     // if (m_position.equals(ArmPosition.HOLD)) {

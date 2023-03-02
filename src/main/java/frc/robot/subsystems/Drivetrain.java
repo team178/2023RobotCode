@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 40, 40, 0.5);
+    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 50, 50, 0.5);
     m_leftMotor.configStatorCurrentLimit(cur_limit);
     m_leftFollower.configStatorCurrentLimit(cur_limit);
     m_rightMotor.configStatorCurrentLimit(cur_limit);

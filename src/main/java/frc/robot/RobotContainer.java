@@ -93,12 +93,16 @@ public class RobotContainer {
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
 
+    m_driverController.leftTrigger().whileTrue(
+      Commands.run(() -> m_drivetrain.setSpeedMult(0.5))
+    );
+
     new Trigger(m_arm::isLowerHome)
-      .whileTrue(
-        Commands.run(() -> m_drivetrain.setSpeedMult(1))
+      .onTrue(
+        Commands.runOnce(() -> m_drivetrain.setSpeedMult(1))
       )
       .whileFalse(
-        Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
+        Commands.run(() -> m_drivetrain.setSpeedMult(0.5))
     );
 
     m_auxBox.b().onTrue(
