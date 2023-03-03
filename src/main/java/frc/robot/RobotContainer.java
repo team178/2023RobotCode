@@ -12,6 +12,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Limelight;
 
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class RobotContainer {
 
   private final Arm m_arm = new Arm();
   private final Claw m_claw = new Claw();
+
+  private final Limelight m_limelight = new Limelight();
 
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
