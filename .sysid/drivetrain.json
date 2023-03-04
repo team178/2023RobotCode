@@ -7,7 +7,7 @@
   "encoder canivore name": "rio",
   "encoder type": "Built-in",
   "encoding": false,
-  "gearing denominator": 0.24,
+  "gearing denominator": 0.238,
   "gearing numerator": 1.0,
   "gyro": "ADXRS450",
   "gyro canivore name": "rio",
@@ -44,5 +44,5 @@
     true,
     true
   ],
-  "velocity measurement period": 1
+  "velocity measurement period": 10
 }

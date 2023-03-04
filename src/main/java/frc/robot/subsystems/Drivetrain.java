@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 50, 50, 0.5);
+    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 80, 70, 0.5);
     m_leftMotor.configStatorCurrentLimit(cur_limit);
     m_leftFollower.configStatorCurrentLimit(cur_limit);
     m_rightMotor.configStatorCurrentLimit(cur_limit);
@@ -106,7 +106,7 @@ public class Drivetrain extends SubsystemBase {
         getRightEncoderPositionMeters(),
         new Pose2d());
 
-    m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
+    // m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
   }
 
   public void resetGyro() {
@@ -146,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getLeftEncoderPositionMeters() {
-    return talonUnitsToMeters(m_leftMotor.getSelectedSensorPosition());
+    return talonUnitsToMeters(m_leftMotor.getSelectedSensorPosition() / DriveConstants.kEncoderCPR);
   }
 
   public double getRightEncoderPosition() {
@@ -154,7 +154,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getRightEncoderPositionMeters() {
-    return talonUnitsToMeters(m_rightMotor.getSelectedSensorPosition());
+    return talonUnitsToMeters(m_rightMotor.getSelectedSensorPosition() / DriveConstants.kEncoderCPR);
   }
 
   public double getLeftEncoderVelocity() {
@@ -162,7 +162,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getLeftEncoderVelocityMeters() {
-    return talonUnitsToMeters(m_leftMotor.getSelectedSensorVelocity());
+    return talonUnitsToMeters(m_leftMotor.getSelectedSensorVelocity() / DriveConstants.kEncoderCPR * 10);
   }
 
   public double getRightEncoderVelocity() {
@@ -170,7 +170,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getRightEncoderVelocityMeters() {
-    return talonUnitsToMeters(m_rightMotor.getSelectedSensorVelocity());
+    return talonUnitsToMeters(m_rightMotor.getSelectedSensorVelocity() / DriveConstants.kEncoderCPR * 10);
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -191,9 +191,8 @@ public class Drivetrain extends SubsystemBase {
         pose);
   }
 
-  private double talonUnitsToMeters(double sensorCounts) {
-    double motorRotations = (double) sensorCounts / DriveConstants.kEncoderCPR;
-    double wheelRotations = motorRotations / DriveConstants.kGearboxRatio;
+  private double talonUnitsToMeters(double motorRotations) {
+    double wheelRotations = motorRotations * DriveConstants.kGearboxRatio;
     double positionMeters = wheelRotations * DriveConstants.kEncoderDistancePerRev;
     return positionMeters;
   }
@@ -219,9 +218,9 @@ public class Drivetrain extends SubsystemBase {
   public Command arcadeDrive(DoubleSupplier forward, DoubleSupplier rot, double deadzone) {
     return this.run(() -> {
       double x = MathUtil.applyDeadband(forward.getAsDouble(), deadzone)
-          * (DriveConstants.kMaxSpeedMetersPerSecond * m_speedMult);
+          * (DriveConstants.kMaxSpeedMetersPerSecond);
       double z = MathUtil.applyDeadband(rot.getAsDouble(), deadzone)
-          * (DriveConstants.kMaxRotationSpeedMetersPerSecond * m_speedMult);
+          * (DriveConstants.kMaxRotationSpeedMetersPerSecond);
       arcadeDrive(
           x,
           z);
@@ -243,7 +242,7 @@ public class Drivetrain extends SubsystemBase {
 
       double[] botposeEntry = LimelightHelpers.getBotPose("limelight");
 
-      if (botposeEntry.length > 0) {
+      if (LimelightHelpers.getTV("limelight")) {
         // The pose from limelight for some reason has it's orign in the middle of the
         // field instead
         // of the bottom left like the WPILib pose estimator, so we have to account for
@@ -255,7 +254,7 @@ public class Drivetrain extends SubsystemBase {
 
         m_poseEstimator.addVisionMeasurement(
             botpose,
-            Timer.getFPGATimestamp() - (botposeEntry[6] / 1000));
+            Timer.getFPGATimestamp() - (botposeEntry[6]/1000));
       }
     }
 
@@ -275,6 +274,9 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("LeftVolts", m_leftMotor.getMotorOutputVoltage());
     SmartDashboard.putNumber("RightVolts",m_leftMotor.getMotorOutputVoltage());
+
+    SmartDashboard.putNumber("LeftEncoderVel", getLeftEncoderVelocityMeters());
+    SmartDashboard.putNumber("RightEncoderVel", getRightEncoderVelocityMeters());
   }
 
   @Override

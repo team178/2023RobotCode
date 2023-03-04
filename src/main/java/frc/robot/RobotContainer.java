@@ -93,12 +93,12 @@ public class RobotContainer {
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
 
-    m_driverController.leftTrigger().whileTrue(
-      Commands.run(() -> m_drivetrain.setSpeedMult(0.5))
-    );
+    // m_driverController.leftTrigger().whileTrue(
+    //   Commands.run(() -> m_drivetrain.setSpeedMult(0.5))
+    // );
 
     new Trigger(m_arm::isLowerHome)
-      .onTrue(
+      .whileTrue(
         Commands.runOnce(() -> m_drivetrain.setSpeedMult(1))
       )
       .whileFalse(
@@ -148,7 +148,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("TestPath", new PathConstraints(1, 3));
-    return m_autoBuilder.fullAuto(pathGroup);
+    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("TestPath", new PathConstraints(3,1));
+    return m_autoBuilder.followPathGroup(pathGroup);
   }
 }

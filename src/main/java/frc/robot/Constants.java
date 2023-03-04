@@ -63,20 +63,20 @@ public final class Constants {
 
     public static final int kEncoderCPR = 2048; // Talon FX constant
     public static final double kWheelDiameter = Units.inchesToMeters(6);
-    public static final double kEncoderDistancePerRev = 2 * kWheelDiameter * Math.PI;
+    public static final double kEncoderDistancePerRev = kWheelDiameter * Math.PI;
     public static final double kGearboxRatio = (34.0/40.0) * (14.0/50.0);
 
     public static final double kTrackWidth = Units.inchesToMeters(21);
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxRotationSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 6;
+    public static final double kMaxRotationSpeedMetersPerSecond = 6;
 
-    public static final double kS = 1; //! Need to be tuned
-    public static final double kV = 3;
-    public static final double kA = 1;
+    public static final double kS = 0.50892;
+    public static final double kV = 0.28201;
+    public static final double kA = 1.1083;
 
-    public static final double kPVel = 0;
+    public static final double kPVel = 0.45769;
 
     public static final Matrix<N3, N1> kVisionTrustMatrix = m_createVisionTrustMatrix();
 
