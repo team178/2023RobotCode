@@ -30,9 +30,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.utils.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -240,7 +240,8 @@ public class Drivetrain extends SubsystemBase {
     m_poseEstimator.update(getGyroRotation(), getRightEncoderPositionMeters(), getRightEncoderPositionMeters());
 
     if (m_limelight.containsKey("botpose")) {
-      double[] botposeEntry = m_limelight.getEntry("botpose").getDoubleArray(new double[1]);
+
+      double[] botposeEntry = LimelightHelpers.getBotPose("limelight");
 
       if (botposeEntry.length > 0) {
         // The pose from limelight for some reason has it's orign in the middle of the
@@ -254,7 +255,7 @@ public class Drivetrain extends SubsystemBase {
 
         m_poseEstimator.addVisionMeasurement(
             botpose,
-            Timer.getFPGATimestamp());
+            Timer.getFPGATimestamp() - (botposeEntry[6] / 1000));
       }
     }
 

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.utils;
 
 //LimelightHelpers v1.2.1 (March 1, 2023)
 
@@ -37,7 +37,7 @@ public class LimelightHelpers {
         private double[] robotPose_FieldSpace;
 
         @JsonProperty("t6r_ts")
-        private  double[] robotPose_TargetSpace;
+        private double[] robotPose_TargetSpace;
 
         @JsonProperty("t6t_cs")
         private double[] targetPose_CameraSpace;
