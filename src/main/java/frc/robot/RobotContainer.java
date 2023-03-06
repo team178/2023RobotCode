@@ -121,6 +121,10 @@ public class RobotContainer {
       m_arm.setPosition(ArmPosition.HIGH)
     );
 
+    m_auxBox.rightTrigger().onTrue(
+      m_arm.setPosition(ArmPosition.BACK)
+    );
+
     m_auxBox.leftBumper().onTrue(
       Commands.runOnce(() -> {
         m_claw.toggle();
