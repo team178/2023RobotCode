@@ -277,6 +277,9 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("LeftEncoderVel", getLeftEncoderVelocityMeters());
     SmartDashboard.putNumber("RightEncoderVel", getRightEncoderVelocityMeters());
+
+    SmartDashboard.putNumber("LeftSetpoint", m_rightPIDController.getSetpoint());
+    SmartDashboard.putNumber("RightSetpoint", m_rightPIDController.getSetpoint());
   }
 
   @Override

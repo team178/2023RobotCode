@@ -76,7 +76,7 @@ public final class Constants {
     public static final double kV = 0.28201;
     public static final double kA = 1.1083;
 
-    public static final double kPVel = 0.45769;
+    public static final double kPVel = 3.1285;
 
     public static final Matrix<N3, N1> kVisionTrustMatrix = m_createVisionTrustMatrix();
 
