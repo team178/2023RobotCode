@@ -82,9 +82,9 @@ public final class Constants {
 
     private static Matrix<N3, N1> m_createVisionTrustMatrix() {
       Matrix<N3, N1> matrix = new Matrix<N3, N1>(N3.instance, N1.instance);
-      matrix.set(0, 0, 3); // X
-      matrix.set(1, 0, 3); // Y
-      matrix.set(2, 0, 3); // Theta
+      matrix.set(0, 0, 5); // X
+      matrix.set(1, 0, 5); // Y
+      matrix.set(2, 0, 5); // Theta
       return matrix;
     }
   }

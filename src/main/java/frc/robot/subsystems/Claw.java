@@ -22,4 +22,12 @@ public class Claw extends SubsystemBase {
         m_solenoid.toggle();
     }
 
+    public void close() {
+        m_solenoid.set(false);
+    }
+
+    public void open() {
+        m_solenoid.set(true);
+    }
+
 }

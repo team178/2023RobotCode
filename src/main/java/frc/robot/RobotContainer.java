@@ -26,6 +26,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -152,7 +153,19 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("TestPath", new PathConstraints(3,1));
-    return m_autoBuilder.followPathGroup(pathGroup);
+    PathPlannerTrajectory back = PathPlanner.loadPath("TestPath", new PathConstraints(2,3));
+    PathPlannerTrajectory forward = PathPlanner.loadPath("DriveUpToGrid", new PathConstraints(0.8,3));
+    return Commands.sequence(
+      Commands.runOnce(m_claw::close),
+      m_autoBuilder.followPath(forward),
+      Autos.placeCone(m_arm, m_claw),
+      m_autoBuilder.followPath(back),
+      m_arm.setPosition(ArmPosition.BACK),
+      Commands.runOnce(m_claw::open),
+      new WaitCommand(2),
+      Commands.runOnce(m_claw::close),
+      new WaitCommand(0.5),
+      m_arm.setPosition(ArmPosition.HOME)
+    );
   }
 }

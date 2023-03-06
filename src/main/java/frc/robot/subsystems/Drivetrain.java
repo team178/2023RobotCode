@@ -98,6 +98,7 @@ public class Drivetrain extends SubsystemBase {
     m_rightFollower.configStatorCurrentLimit(cur_limit);
 
     calibrateGyro();
+    resetEncoders();
 
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         DriveConstants.kDriveKinematics,
@@ -106,7 +107,7 @@ public class Drivetrain extends SubsystemBase {
         getRightEncoderPositionMeters(),
         new Pose2d());
 
-    // m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
+    m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
   }
 
   public void resetGyro() {
@@ -277,6 +278,9 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("LeftEncoderVel", getLeftEncoderVelocityMeters());
     SmartDashboard.putNumber("RightEncoderVel", getRightEncoderVelocityMeters());
+
+    SmartDashboard.putNumber("LeftEncoderPos", getLeftEncoderPositionMeters());
+    SmartDashboard.putNumber("RightEncoderPos", getLeftEncoderPositionMeters());
 
     SmartDashboard.putNumber("LeftSetpoint", m_rightPIDController.getSetpoint());
     SmartDashboard.putNumber("RightSetpoint", m_rightPIDController.getSetpoint());
