@@ -13,11 +13,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lights;
 
-import java.util.List;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 
@@ -29,7 +24,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -101,16 +95,19 @@ public class RobotContainer {
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
 
-    // m_driverController.leftTrigger().whileTrue(
-    //   Commands.run(() -> m_drivetrain.setSpeedMult(0.5))
-    // );
-
     new Trigger(m_arm::isLowerHome)
-      .whileTrue(
-        Commands.runOnce(() -> m_drivetrain.setSpeedMult(1))
-      )
-      .whileFalse(
-        Commands.run(() -> m_drivetrain.setSpeedMult(0.5))
+    .whileFalse(
+      Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
+    );
+    
+    new Trigger(m_arm::isLowerHome).and(m_driverController.leftTrigger()::getAsBoolean)
+    .whileTrue(
+      Commands.run(() -> m_drivetrain.setSpeedMult(0.1))
+    );
+
+    new Trigger(m_arm::isLowerHome).and(() -> !m_driverController.leftTrigger().getAsBoolean())
+    .whileTrue(
+      Commands.run(() -> m_drivetrain.setSpeedMult(1))
     );
 
     m_auxBox.b().onTrue(
@@ -127,10 +124,6 @@ public class RobotContainer {
 
     m_auxBox.x().onTrue(
       m_arm.setPosition(ArmPosition.HIGH)
-    );
-
-    m_auxBox.rightTrigger().onTrue(
-      m_arm.setPosition(ArmPosition.BACK)
     );
 
     m_auxBox.leftBumper().onTrue(
