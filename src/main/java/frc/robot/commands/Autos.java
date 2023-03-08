@@ -6,11 +6,20 @@ package frc.robot.commands;
 
 import java.util.HashMap;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Drivetrain;
 
 public final class Autos {
 
@@ -38,16 +47,40 @@ public final class Autos {
   //     ).andThen(() -> drive.tankDriveVolts(0, 0));
   // }
 
-  public static Command placeCone(Arm arm, Claw claw) {
+  public static Command blueSixConeCube(Arm arm, Claw claw, Drivetrain drivetrain, RamseteAutoBuilder autoBuilder) {
+    PathPlannerTrajectory back = PathPlanner.loadPath("TestPath", new PathConstraints(1.75,5));
+    PathPlannerTrajectory finish = PathPlanner.loadPath("DriveUpToCubeGridWithCube", new PathConstraints(2,5));
+    drivetrain.resetPose(
+      new Pose2d(1.83, 4.94, new Rotation2d(Units.degreesToRadians(180)))
+    );
     return Commands.sequence(
-      Commands.runOnce(claw::close),
-      arm.setPosition(ArmPosition.HIGH),
-      new WaitCommand(2),
-      Commands.runOnce(claw::open),
-      new WaitCommand(1),
+      Autos.placeHigh(arm, claw),
+      new WaitCommand(0.2),
+      Commands.parallel(
+        autoBuilder.followPath(back),
+        Commands.sequence(
+          new WaitCommand(0.7),
+          arm.setPosition(ArmPosition.BACK),
+          claw.open()
+          )
+      ),
+      claw.open(),
+      new WaitCommand(0.3),
       arm.setPosition(ArmPosition.HOME),
-      new WaitCommand(0.5),
-      Commands.runOnce(claw::close)
+      autoBuilder.followPath(finish),
+      Autos.placeHigh(arm, claw),
+      new WaitCommand(0.2)
+    );
+  }
+
+  public static Command placeHigh(Arm arm, Claw claw) {
+    return Commands.sequence(
+      claw.close(),
+      arm.setPosition(ArmPosition.HIGH),
+      new WaitCommand(1.5),
+      claw.open(),
+      new WaitCommand(0.3),
+      arm.setPosition(ArmPosition.HOME)
     );
   }
 

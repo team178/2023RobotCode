@@ -23,6 +23,9 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -70,6 +73,10 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    m_drivetrain.resetPose(
+      new Pose2d(1.83, 4.94, new Rotation2d(Units.degreesToRadians(180)))
+    );
   }
 
   /**
@@ -153,19 +160,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory back = PathPlanner.loadPath("TestPath", new PathConstraints(2,3));
-    PathPlannerTrajectory forward = PathPlanner.loadPath("DriveUpToGrid", new PathConstraints(0.8,3));
-    return Commands.sequence(
-      Commands.runOnce(m_claw::close),
-      m_autoBuilder.followPath(forward),
-      Autos.placeCone(m_arm, m_claw),
-      m_autoBuilder.followPath(back),
-      m_arm.setPosition(ArmPosition.BACK),
-      Commands.runOnce(m_claw::open),
-      new WaitCommand(2),
-      Commands.runOnce(m_claw::close),
-      new WaitCommand(0.5),
-      m_arm.setPosition(ArmPosition.HOME)
-    );
+    return Autos.blueSixConeCube(m_arm, m_claw, m_drivetrain, m_autoBuilder);
   }
 }

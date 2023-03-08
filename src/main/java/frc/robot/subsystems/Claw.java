@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
 
@@ -22,12 +24,12 @@ public class Claw extends SubsystemBase {
         m_solenoid.toggle();
     }
 
-    public void close() {
-        m_solenoid.set(false);
+    public Command close() {
+        return Commands.runOnce(() -> m_solenoid.set(false));
     }
 
-    public void open() {
-        m_solenoid.set(true);
+    public Command open() {
+        return Commands.runOnce(() -> m_solenoid.set(true));
     }
 
 }
