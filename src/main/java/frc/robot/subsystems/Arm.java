@@ -174,13 +174,11 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     if (isLowerHome()) {
       resetLowerEncoder();
-      //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
       m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8));
     }
 
     if (isUpperHome()) {
      resetUpperEncoder();
-      //! somehow this works but it's not how it's supposed to work but it works so don't ask questions
       m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
     }
 

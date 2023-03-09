@@ -16,7 +16,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -56,9 +55,6 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  private final SlewRateLimiter m_forwardSlew = new SlewRateLimiter(7);
-  private final SlewRateLimiter m_turnSlew = new SlewRateLimiter(7);
-
   private double m_speedMult = 1;
 
   /* Creates a new Drivetrain. */
@@ -91,6 +87,7 @@ public class Drivetrain extends SubsystemBase {
     m_leftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
+    // Current limiting to prevent brownouts
     StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 80, 70, 0.5);
     m_leftMotor.configStatorCurrentLimit(cur_limit);
     m_leftFollower.configStatorCurrentLimit(cur_limit);
@@ -107,6 +104,7 @@ public class Drivetrain extends SubsystemBase {
         getRightEncoderPositionMeters(),
         new Pose2d());
 
+    // Weird matrix thing that we can use to adjust how much we trust each of the Limelight's input values
     m_poseEstimator.setVisionMeasurementStdDevs(DriveConstants.kVisionTrustMatrix);
   }
 
@@ -129,7 +127,6 @@ public class Drivetrain extends SubsystemBase {
    * max speed in meters per second.
    * Just meant to be a quick and easy speed multiplier.
    */
-
   public void setSpeedMult(double speed) {
     m_speedMult = MathUtil.clamp(speed, 0.0, 1.0);
   }

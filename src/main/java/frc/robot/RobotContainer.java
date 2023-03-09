@@ -18,10 +18,6 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -67,10 +63,6 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
-
-    m_drivetrain.resetPose(
-      new Pose2d(1.83, 4.94, new Rotation2d(Units.degreesToRadians(180)))
-    );
   }
 
   /**
@@ -83,18 +75,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     m_drivetrain.setDefaultCommand(
         m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
     );
 
+    // Drivebase slowdown triggers
+    // The logic works so we'll just leave it
     new Trigger(m_arm::isLowerHome)
     .whileFalse(
       Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
@@ -132,19 +119,21 @@ public class RobotContainer {
       })
     );
 
+    // "Jog" functionality
     m_auxBox.povUpLeft().whileTrue(m_arm.bumpLower(-0.01));
     m_auxBox.povDownLeft().whileTrue(m_arm.bumpLower(0.01));
 
     m_auxBox.povUpRight().whileTrue(m_arm.bumpUpper(-0.01));
     m_auxBox.povDownRight().whileTrue(m_arm.bumpUpper(0.01));
-
+    
+    // Lights
     m_auxBox.leftStick().onTrue(m_lights.runYellow());
     m_auxBox.rightStick().onTrue(m_lights.runPurple());
     m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Ultrasonic", m_claw.getUltrasonicDistance());
+    // SmartDashboard.putNumber("Ultrasonic", m_claw.getUltrasonicDistance());
   }
 
   /**
