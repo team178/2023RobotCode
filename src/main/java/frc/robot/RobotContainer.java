@@ -18,6 +18,8 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -54,6 +56,8 @@ public class RobotContainer {
     m_drivetrain
   );
 
+  private final Field2d m_autoPreview = new Field2d();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -63,6 +67,11 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    
+    Autos.initAutoChooser(m_arm, m_claw, m_drivetrain, m_autoBuilder);
+    Shuffleboard.getTab("Autos")
+      .add(m_autoPreview)
+      .withSize(9, 3);
   }
 
   /**
@@ -134,6 +143,9 @@ public class RobotContainer {
 
   public void periodic() {
     // SmartDashboard.putNumber("Ultrasonic", m_claw.getUltrasonicDistance());
+    m_autoPreview.setRobotPose(
+      Autos.getSelectedAuto().getStartPosition()
+    );
   }
 
   /**
@@ -142,6 +154,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.blueSixConeCube(m_arm, m_claw, m_drivetrain, m_autoBuilder);
+    return Autos.getSelectedAuto();
   }
 }

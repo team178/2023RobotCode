@@ -14,9 +14,15 @@ import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.auto.BlueSixConeCube;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
@@ -24,6 +30,8 @@ import frc.robot.subsystems.Drivetrain;
 public final class Autos {
 
   public static final HashMap<String, Command> eventMap = initEventMap();
+
+  private static final SendableChooser<AutoCommand> autoChooser = new SendableChooser<AutoCommand>();;
 
   private static HashMap<String, Command> initEventMap() {
     HashMap<String, Command> events = new HashMap<>();
@@ -47,30 +55,18 @@ public final class Autos {
   //     ).andThen(() -> drive.tankDriveVolts(0, 0));
   // }
 
-  public static Command blueSixConeCube(Arm arm, Claw claw, Drivetrain drivetrain, RamseteAutoBuilder autoBuilder) {
-    PathPlannerTrajectory back = PathPlanner.loadPath("TestPath", new PathConstraints(1.75,5));
-    PathPlannerTrajectory finish = PathPlanner.loadPath("DriveUpToCubeGridWithCube", new PathConstraints(2,5));
-    drivetrain.resetPose(
-      new Pose2d(1.83, 4.94, new Rotation2d(Units.degreesToRadians(180)))
-    );
-    return Commands.sequence(
-      Autos.placeHigh(arm, claw),
-      new WaitCommand(0.2),
-      Commands.parallel(
-        autoBuilder.followPath(back),
-        Commands.sequence(
-          new WaitCommand(0.7),
-          arm.setPosition(ArmPosition.BACK),
-          claw.open()
-          )
-      ),
-      claw.open(),
-      new WaitCommand(0.3),
-      arm.setPosition(ArmPosition.HOME),
-      autoBuilder.followPath(finish),
-      Autos.placeHigh(arm, claw),
-      new WaitCommand(0.2)
-    );
+  public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain, RamseteAutoBuilder autoBuilder) {
+    autoChooser.setDefaultOption("None", new AutoCommand());
+    autoChooser.addOption("BlueSixConeCube", new BlueSixConeCube(arm, claw, drivetrain, autoBuilder));
+    autoChooser.addOption("OtherAuto", new AutoCommand());
+    Shuffleboard.getTab("Autos")
+      .add("Auto", autoChooser)
+      .withWidget(BuiltInWidgets.kSplitButtonChooser)
+      .withSize(9, 1);
+  }
+
+  public static AutoCommand getSelectedAuto() {
+    return autoChooser.getSelected();
   }
 
   public static Command placeHigh(Arm arm, Claw claw) {

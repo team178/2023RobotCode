@@ -261,26 +261,26 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData(m_field);
     SmartDashboard.putData(m_gyro);
 
-    SmartDashboard.putNumber("Left Temp.", m_leftMotor.getTemperature());
-    SmartDashboard.putNumber("Right Temp.", m_rightMotor.getTemperature());
+    // SmartDashboard.putNumber("Left Temp.", m_leftMotor.getTemperature());
+    // SmartDashboard.putNumber("Right Temp.", m_rightMotor.getTemperature());
 
-    SmartDashboard.putNumber("Left aTemp.", m_leftFollower.getTemperature());
-    SmartDashboard.putNumber("Right aTemp.", m_rightFollower.getTemperature());
+    // SmartDashboard.putNumber("Left aTemp.", m_leftFollower.getTemperature());
+    // SmartDashboard.putNumber("Right aTemp.", m_rightFollower.getTemperature());
 
-    SmartDashboard.putNumber("LeftCurrent", m_leftMotor.getStatorCurrent());
-    SmartDashboard.putNumber("RightCurrent", m_rightMotor.getStatorCurrent());
+    // SmartDashboard.putNumber("LeftCurrent", m_leftMotor.getStatorCurrent());
+    // SmartDashboard.putNumber("RightCurrent", m_rightMotor.getStatorCurrent());
 
-    SmartDashboard.putNumber("LeftVolts", m_leftMotor.getMotorOutputVoltage());
-    SmartDashboard.putNumber("RightVolts",m_leftMotor.getMotorOutputVoltage());
+    // SmartDashboard.putNumber("LeftVolts", m_leftMotor.getMotorOutputVoltage());
+    // SmartDashboard.putNumber("RightVolts",m_leftMotor.getMotorOutputVoltage());
 
-    SmartDashboard.putNumber("LeftEncoderVel", getLeftEncoderVelocityMeters());
-    SmartDashboard.putNumber("RightEncoderVel", getRightEncoderVelocityMeters());
+    // SmartDashboard.putNumber("LeftEncoderVel", getLeftEncoderVelocityMeters());
+    // SmartDashboard.putNumber("RightEncoderVel", getRightEncoderVelocityMeters());
 
-    SmartDashboard.putNumber("LeftEncoderPos", getLeftEncoderPositionMeters());
-    SmartDashboard.putNumber("RightEncoderPos", getLeftEncoderPositionMeters());
+    // SmartDashboard.putNumber("LeftEncoderPos", getLeftEncoderPositionMeters());
+    // SmartDashboard.putNumber("RightEncoderPos", getLeftEncoderPositionMeters());
 
-    SmartDashboard.putNumber("LeftSetpoint", m_rightPIDController.getSetpoint());
-    SmartDashboard.putNumber("RightSetpoint", m_rightPIDController.getSetpoint());
+    // SmartDashboard.putNumber("LeftSetpoint", m_rightPIDController.getSetpoint());
+    // SmartDashboard.putNumber("RightSetpoint", m_rightPIDController.getSetpoint());
   }
 
   @Override
