@@ -244,7 +244,7 @@ public class Drivetrain extends SubsystemBase {
         // The pose from limelight for some reason has it's orign in the middle of the
         // field instead
         // of the bottom left like the WPILib pose estimator, so we have to account for
-        // that
+        // that%
         Pose2d botpose = new Pose2d(
             botposeEntry[0] + FieldConstants.kFieldLength / 2,
             botposeEntry[1] + FieldConstants.kFieldWidth / 2,

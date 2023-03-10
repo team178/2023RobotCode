@@ -6,23 +6,16 @@ package frc.robot.commands;
 
 import java.util.HashMap;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.AutoCommand;
-import frc.robot.commands.auto.BlueSixConeCube;
+import frc.robot.commands.auto.ThreeSixConeCube;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
@@ -57,8 +50,7 @@ public final class Autos {
 
   public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain, RamseteAutoBuilder autoBuilder) {
     autoChooser.setDefaultOption("None", new AutoCommand());
-    autoChooser.addOption("BlueSixConeCube", new BlueSixConeCube(arm, claw, drivetrain, autoBuilder));
-    autoChooser.addOption("OtherAuto", new AutoCommand());
+    autoChooser.addOption("ThreeSixConeCube", new ThreeSixConeCube(arm, claw, drivetrain, autoBuilder));
     Shuffleboard.getTab("Autos")
       .add("Auto", autoChooser)
       .withWidget(BuiltInWidgets.kSplitButtonChooser)

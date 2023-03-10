@@ -53,6 +53,7 @@ public class RobotContainer {
     DriveConstants.kDriveKinematics,
     m_drivetrain::tankDriveVolts,
     Autos.eventMap,
+    true,
     m_drivetrain
   );
 
@@ -91,20 +92,15 @@ public class RobotContainer {
 
     // Drivebase slowdown triggers
     // The logic works so we'll just leave it
-    new Trigger(m_arm::isLowerHome)
-    .whileFalse(
-      Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
-    );
+    // new Trigger(m_arm::isLowerHome)
+    // .whileFalse(
+    //   Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
+    // );
     
-    new Trigger(m_arm::isLowerHome).and(m_driverController.leftTrigger()::getAsBoolean)
+    m_driverController.leftTrigger()
     .whileTrue(
       Commands.run(() -> m_drivetrain.setSpeedMult(0.1))
-    );
-
-    new Trigger(m_arm::isLowerHome).and(() -> !m_driverController.leftTrigger().getAsBoolean())
-    .whileTrue(
-      Commands.run(() -> m_drivetrain.setSpeedMult(1))
-    );
+    ).whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
 
     m_auxBox.b().onTrue(
       m_arm.setPosition(ArmPosition.HOME)
@@ -143,7 +139,7 @@ public class RobotContainer {
 
   public void periodic() {
     // SmartDashboard.putNumber("Ultrasonic", m_claw.getUltrasonicDistance());
-    m_autoPreview.setRobotPose(
+    m_autoPreview.getRobotObject().setTrajectory(
       Autos.getSelectedAuto().getStartPosition()
     );
   }

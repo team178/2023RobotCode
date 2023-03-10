@@ -55,12 +55,21 @@
       "/SmartDashboard/PPRamseteCommand_field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/ArmMech2d": {
+      "/Shuffleboard/Autos/Field": {
+        "Robot": {
+          "style": "Track"
+        },
+        "height": 7.924799919128418,
+        "units": "feet",
+        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
       },
       "/SmartDashboard/Field": {
+        "height": 15.849599838256836,
+        "units": "feet",
+        "width": 16.459199905395508,
         "window": {
           "visible": true
         }
@@ -69,6 +78,15 @@
   },
   "NetworkTables": {
     "transitory": {
+      "Shuffleboard": {
+        "Autos": {
+          "Field": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "open": true
       }
