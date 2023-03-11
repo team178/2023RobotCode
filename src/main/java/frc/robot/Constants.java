@@ -8,7 +8,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoubleArrayTopic;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean

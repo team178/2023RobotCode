@@ -4,16 +4,31 @@
 
 package frc.robot.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import com.pathplanner.lib.auto.RamseteAutoBuilder;
-
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.auto.ThreeSixConeCube;
 import frc.robot.subsystems.Arm;
@@ -33,28 +48,86 @@ public final class Autos {
     return events;
   }
 
-  // public static Command driveTrajectory(Drivetrain drive, Trajectory trajectory) {
-  //   return new RamseteCommand(
-  //       trajectory,
-  //       drive::getEstimatedPosition,
-  //       new RamseteController(),
-  //       new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV, DriveConstants.kA),
-  //       DriveConstants.kDriveKinematics,
-  //       drive::getWheelSpeeds,
-  //       new PIDController(DriveConstants.kPVel, 0, 0),
-  //       new PIDController(DriveConstants.kPVel, 0, 0),
-  //       drive::tankDriveVolts,
-  //       drive
-  //     ).andThen(() -> drive.tankDriveVolts(0, 0));
-  // }
+  public static Command driveTrajectory(Drivetrain drive, Trajectory trajectory) {
+    return new RamseteCommand(
+        trajectory,
+        drive::getEstimatedPosition,
+        new RamseteController(),
+        new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV, DriveConstants.kA),
+        DriveConstants.kDriveKinematics,
+        drive::getWheelSpeeds,
+        new PIDController(DriveConstants.kPVel, 0, 0),
+        new PIDController(DriveConstants.kPVel, 0, 0),
+        drive::tankDriveVolts,
+        drive
+      ).andThen(() -> drive.tankDriveVolts(0, 0));
+  }
+  
+    /*
+    * Mirrors the provided trajectory across the field if the current alliance is Red.
+    * All auto paths should be made on the blue side of the field, then use this
+    * method to make it work for the Red side.
+    */
+  public static Trajectory mirrorTrajectoryIfRed(Trajectory path) {
+    if (DriverStation.getAlliance().equals(Alliance.Red)) {
+      return mirrorTrajectory(path);
+    } else {
+      return path;
+    }
+  }
+  
+  /*
+   * Mirrors the provided trajectory across the field
+   */
+  public static Trajectory mirrorTrajectory(Trajectory traj) {
+    var firstState = traj.getStates().get(0);
+    var firstPose = traj.getInitialPose();
 
-  public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain, RamseteAutoBuilder autoBuilder) {
+    // Calculate the transformed first pose.
+    var newFirstPose = firstPose.plus(
+        new Transform2d(
+            new Translation2d(FieldConstants.kFieldLength - (firstPose.getX() * 2),
+            new Rotation2d(Units.degreesToRadians(180))),
+            new Rotation2d(Units.degreesToRadians(180))
+    ));
+    List<State> newStates = new ArrayList<>();
+
+    newStates.add(
+        new State(
+            firstState.timeSeconds,
+            firstState.velocityMetersPerSecond,
+            firstState.accelerationMetersPerSecondSq,
+            newFirstPose,
+            firstState.curvatureRadPerMeter));
+
+    for (int i = 1; i < traj.getStates().size(); i++) {
+        var state = traj.getStates().get(i);
+        
+        newStates.add(
+            new State(
+                state.timeSeconds,
+                state.velocityMetersPerSecond,
+                state.accelerationMetersPerSecondSq,
+                new Pose2d(
+                    FieldConstants.kFieldLength - state.poseMeters.getX(),
+                    state.poseMeters.getY(),
+                    state.poseMeters.getRotation().plus(
+                        new Rotation2d(Units.degreesToRadians(180))
+                        )
+                ),
+                state.curvatureRadPerMeter));
+    }
+
+    return new Trajectory(newStates);
+  }
+  
+  public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain) {
     autoChooser.setDefaultOption("None", new AutoCommand());
-    autoChooser.addOption("ThreeSixConeCube", new ThreeSixConeCube(arm, claw, drivetrain, autoBuilder));
+    autoChooser.addOption("ThreeSixConeCube", new ThreeSixConeCube(arm, claw, drivetrain));
     Shuffleboard.getTab("Autos")
-      .add("Auto", autoChooser)
-      .withWidget(BuiltInWidgets.kSplitButtonChooser)
-      .withSize(9, 1);
+        .add("Auto", autoChooser)
+        .withWidget(BuiltInWidgets.kSplitButtonChooser)
+        .withSize(9, 1);
   }
 
   public static AutoCommand getSelectedAuto() {
@@ -63,13 +136,12 @@ public final class Autos {
 
   public static Command placeHigh(Arm arm, Claw claw) {
     return Commands.sequence(
-      claw.close(),
-      arm.setPosition(ArmPosition.HIGH),
-      new WaitCommand(1.5),
-      claw.open(),
-      new WaitCommand(0.3),
-      arm.setPosition(ArmPosition.HOME)
-    );
+        claw.close(),
+        arm.setPosition(ArmPosition.HIGH),
+        new WaitCommand(1.5),
+        claw.open(),
+        new WaitCommand(0.3),
+        arm.setPosition(ArmPosition.HOME));
   }
 
   private Autos() {

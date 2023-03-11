@@ -4,20 +4,18 @@
 
 package frc.robot;
 
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmPosition;
 import frc.robot.commands.Autos;
+import frc.robot.commands.auto.AutoCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lights;
 
-import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,17 +43,6 @@ public class RobotContainer {
 
   private final CommandXboxController m_auxBox =
       new CommandXboxController(OperatorConstants.kAuxControllerPort);
-    
-  private final RamseteAutoBuilder m_autoBuilder = new RamseteAutoBuilder(
-    m_drivetrain::getEstimatedPosition,
-    m_drivetrain::resetPose,
-    new RamseteController(),
-    DriveConstants.kDriveKinematics,
-    m_drivetrain::tankDriveVolts,
-    Autos.eventMap,
-    true,
-    m_drivetrain
-  );
 
   private final Field2d m_autoPreview = new Field2d();
 
@@ -69,7 +56,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     
-    Autos.initAutoChooser(m_arm, m_claw, m_drivetrain, m_autoBuilder);
+    Autos.initAutoChooser(m_arm, m_claw, m_drivetrain);
     Shuffleboard.getTab("Autos")
       .add(m_autoPreview)
       .withSize(9, 3);
@@ -87,8 +74,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     m_drivetrain.setDefaultCommand(
-        m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2)
-    );
+        m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2));
 
     // Drivebase slowdown triggers
     // The logic works so we'll just leave it
@@ -96,33 +82,28 @@ public class RobotContainer {
     // .whileFalse(
     //   Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
     // );
-    
+
     m_driverController.leftTrigger()
-    .whileTrue(
-      Commands.run(() -> m_drivetrain.setSpeedMult(0.1))
-    ).whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
+        .whileTrue(
+            Commands.run(() -> m_drivetrain.setSpeedMult(0.1)))
+        .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
 
     m_auxBox.b().onTrue(
-      m_arm.setPosition(ArmPosition.HOME)
-    );
-    
+        m_arm.setPosition(ArmPosition.HOME));
+
     m_auxBox.y().onTrue(
-      m_arm.setPosition(ArmPosition.SUBSTATION)
-    );
+        m_arm.setPosition(ArmPosition.SUBSTATION));
 
     m_auxBox.a().onTrue(
-      m_arm.setPosition(ArmPosition.LOW)
-    );
+        m_arm.setPosition(ArmPosition.LOW));
 
     m_auxBox.x().onTrue(
-      m_arm.setPosition(ArmPosition.HIGH)
-    );
+        m_arm.setPosition(ArmPosition.HIGH));
 
     m_auxBox.leftBumper().onTrue(
-      Commands.runOnce(() -> {
-        m_claw.toggle();
-      })
-    );
+        Commands.runOnce(() -> {
+          m_claw.toggle();
+        }));
 
     // "Jog" functionality
     m_auxBox.povUpLeft().whileTrue(m_arm.bumpLower(-0.01));
@@ -130,16 +111,15 @@ public class RobotContainer {
 
     m_auxBox.povUpRight().whileTrue(m_arm.bumpUpper(-0.01));
     m_auxBox.povDownRight().whileTrue(m_arm.bumpUpper(0.01));
-    
+
     // Lights
     m_auxBox.leftStick().onTrue(m_lights.runYellow());
     m_auxBox.rightStick().onTrue(m_lights.runPurple());
     m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
   }
-
-  public void periodic() {
-    // SmartDashboard.putNumber("Ultrasonic", m_claw.getUltrasonicDistance());
-    m_autoPreview.getRobotObject().setTrajectory(
+  
+  public void disabledPeriodic() {
+    m_autoPreview.setRobotPose(
       Autos.getSelectedAuto().getStartPosition()
     );
   }
@@ -150,6 +130,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.getSelectedAuto();
+    AutoCommand autoCommand = Autos.getSelectedAuto();
+    m_drivetrain.resetPose(autoCommand.getStartPosition());
+    return autoCommand;
   }
 }

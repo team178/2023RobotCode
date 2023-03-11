@@ -40,6 +40,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -55,9 +58,24 @@
       "/SmartDashboard/PPRamseteCommand_field": "Field2d"
     },
     "windows": {
+      "/Shuffleboard/Autos/Auto": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Autos/Field": {
         "Robot": {
-          "style": "Track"
+          "arrowSize": 69,
+          "arrowWeight": 2.0,
+          "color": [
+            1.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "style": "Box/Image",
+          "weight": 2.0,
+          "width": 0.6096000075340271
         },
         "height": 7.924799919128418,
         "units": "feet",
@@ -67,7 +85,7 @@
         }
       },
       "/SmartDashboard/Field": {
-        "height": 15.849599838256836,
+        "height": 7.924799919128418,
         "units": "feet",
         "width": 16.459199905395508,
         "window": {
@@ -79,6 +97,13 @@
   "NetworkTables": {
     "transitory": {
       "Shuffleboard": {
+        ".metadata": {
+          "Autos": {
+            "Field": {
+              "open": true
+            }
+          }
+        },
         "Autos": {
           "Field": {
             "open": true
@@ -88,6 +113,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "PPRamseteCommand": {
+          "open": true
+        },
         "open": true
       }
     }
