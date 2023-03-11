@@ -5,6 +5,8 @@ import com.pathplanner.lib.PathPlanner;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArmPosition;
@@ -15,39 +17,56 @@ import frc.robot.subsystems.Drivetrain;
 
 public class ThreeSixConeCube extends AutoCommand {
 
-    private Trajectory back;
-    private Trajectory finish;
+    private Trajectory toCubeBlue;
+    private Trajectory toGridBlue;
+
+    private Trajectory toCubeRed;
+    private Trajectory toGridRed;
 
     @Override
     public Pose2d getStartPosition() {
-        return back.getInitialPose();
+        return getCubeTrajectory().getInitialPose();
+    }
+
+    private Trajectory getCubeTrajectory() {
+        if (DriverStation.getAlliance().equals(Alliance.Red)) {
+            return toCubeRed;
+        } else {
+            return toCubeBlue;
+        }
+    }
+
+    private Trajectory getGridTrajectory() {
+        if (DriverStation.getAlliance().equals(Alliance.Red)) {
+            return toGridRed;
+        } else {
+            return toGridBlue;
+        }
     }
 
     public ThreeSixConeCube(Arm arm, Claw claw, Drivetrain drivetrain) {
 
-        back = Autos.mirrorTrajectoryIfRed(
-                PathPlanner.loadPath("TestPath", new PathConstraints(1.75, 5))
-            );
+        toCubeBlue = PathPlanner.loadPath("36DriveToCube", new PathConstraints(1.75, 5), true);
+        toCubeRed = Autos.mirrorTrajectory(toCubeBlue);
 
-        finish = Autos.mirrorTrajectoryIfRed(
-                PathPlanner.loadPath("DriveUpToCubeGridWithCube", new PathConstraints(2,5))
-            );
+        toGridBlue = PathPlanner.loadPath("36DriveToGrid", new PathConstraints(2,5));
+        toGridRed = Autos.mirrorTrajectory(toGridBlue);
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
             new WaitCommand(0.2),
             Commands.parallel(
-                Autos.driveTrajectory(drivetrain, back),
+                Autos.driveTrajectory(drivetrain, getCubeTrajectory()),
                 Commands.sequence(
                     new WaitCommand(0.7),
                     arm.setPosition(ArmPosition.BACK),
                     claw.open()
                 )
             ),
-            claw.open(),
+            claw.close(),
             new WaitCommand(0.3),
             arm.setPosition(ArmPosition.HOME),
-            Autos.driveTrajectory(drivetrain, finish),
+            Autos.driveTrajectory(drivetrain, getGridTrajectory()),
             Autos.placeHigh(arm, claw),
             new WaitCommand(0.2)
         );
