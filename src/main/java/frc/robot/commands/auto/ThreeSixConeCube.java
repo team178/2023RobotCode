@@ -26,12 +26,12 @@ public class ThreeSixConeCube extends AutoCommand {
     public ThreeSixConeCube(Arm arm, Claw claw, Drivetrain drivetrain) {
 
         back = Autos.mirrorTrajectoryIfRed(
-                PathPlanner.loadPath("TestPath", new PathConstraints(1.75, 5))
-            );
+            PathPlanner.loadPath("TestPath", new PathConstraints(1.75, 5))
+        );
 
         finish = Autos.mirrorTrajectoryIfRed(
-                PathPlanner.loadPath("DriveUpToCubeGridWithCube", new PathConstraints(2,5))
-            );
+            PathPlanner.loadPath("DriveUpToCubeGridWithCube", new PathConstraints(2,5))
+        );
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
