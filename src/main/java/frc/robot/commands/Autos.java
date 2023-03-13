@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.auto.ChargeCube;
 import frc.robot.commands.auto.ThreeSixConeCube;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -99,6 +100,7 @@ public final class Autos {
     public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain) {
         autoChooser.setDefaultOption("None", new AutoCommand());
         autoChooser.addOption("ThreeSixConeCube", new ThreeSixConeCube(arm, claw, drivetrain));
+        autoChooser.addOption("ChargeCube", new ChargeCube(arm, claw, drivetrain));
         Shuffleboard.getTab("Autos")
             .add("Auto", autoChooser)
             .withWidget(BuiltInWidgets.kSplitButtonChooser)
