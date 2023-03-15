@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,6 +28,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.auto.ChargeCube;
+import frc.robot.commands.auto.ChargeOverCube;
 import frc.robot.commands.auto.ThreeSixConeCube;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -36,16 +36,7 @@ import frc.robot.subsystems.Drivetrain;
 
 public final class Autos {
 
-    public static final HashMap<String, Command> eventMap = initEventMap();
-
     public static SendableChooser<AutoCommand> autoChooser = new SendableChooser<AutoCommand>();
-
-    private static HashMap<String, Command> initEventMap() {
-        HashMap<String, Command> events = new HashMap<>();
-        // Add events that can be used in a Pathplanner path here
-        // events.put("ExampleMarker", new ExampleCommand());
-        return events;
-    }
 
     public static Command driveTrajectory(Drivetrain drive, Trajectory trajectory) {
         return new RamseteCommand(
@@ -101,6 +92,7 @@ public final class Autos {
         autoChooser.setDefaultOption("None", new AutoCommand());
         autoChooser.addOption("ThreeSixConeCube", new ThreeSixConeCube(arm, claw, drivetrain));
         autoChooser.addOption("ChargeCube", new ChargeCube(arm, claw, drivetrain));
+        autoChooser.addOption("ChargeOverCube", new ChargeOverCube(arm, claw, drivetrain));
         Shuffleboard.getTab("Autos")
             .add("Auto", autoChooser)
             .withWidget(BuiltInWidgets.kSplitButtonChooser)
