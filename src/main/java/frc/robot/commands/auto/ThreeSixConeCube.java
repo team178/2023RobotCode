@@ -4,9 +4,6 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArmPosition;
@@ -18,46 +15,24 @@ import frc.robot.subsystems.Drivetrain;
 
 public class ThreeSixConeCube extends AutoCommand {
 
-    private Trajectory toCubeBlue;
-    private Trajectory toGridBlue;
-
-    private Trajectory toCubeRed;
-    private Trajectory toGridRed;
+    private AutoTrajectoryPair toCube;
+    private AutoTrajectoryPair toGrid;
 
     @Override
     public Pose2d getStartPosition() {
-        return getCubeTrajectory().getInitialPose();
-    }
-
-    private Trajectory getCubeTrajectory() {
-        if (DriverStation.getAlliance().equals(Alliance.Red)) {
-            return toCubeRed;
-        } else {
-            return toCubeBlue;
-        }
-    }
-
-    private Trajectory getGridTrajectory() {
-        if (DriverStation.getAlliance().equals(Alliance.Red)) {
-            return toGridRed;
-        } else {
-            return toGridBlue;
-        }
+        return toCube.getAllianceTrajectory().getInitialPose();
     }
 
     public ThreeSixConeCube(Arm arm, Claw claw, Drivetrain drivetrain) {
 
-        toCubeBlue = PathPlanner.loadPath("36DriveToCube", new PathConstraints(1.75, 5), true);
-        toCubeRed = Autos.mirrorTrajectory(toCubeBlue);
-
-        toGridBlue = PathPlanner.loadPath("36DriveToGrid", new PathConstraints(2,5));
-        toGridRed = Autos.mirrorTrajectory(toGridBlue);
+        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("36DriveToCube", new PathConstraints(1.75, 5), true));
+        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("36DriveToGrid", new PathConstraints(2,5)));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
             new WaitCommand(0.2),
             Commands.parallel(
-                new DriveTrajectory(drivetrain, this::getCubeTrajectory),
+                new DriveTrajectory(drivetrain, toCube::getAllianceTrajectory),
                 Commands.sequence(
                     new WaitCommand(0.7),
                     arm.setPosition(ArmPosition.BACK),
@@ -67,7 +42,7 @@ public class ThreeSixConeCube extends AutoCommand {
             claw.close(),
             new WaitCommand(0.3),
             arm.setPosition(ArmPosition.HOME),
-            new DriveTrajectory(drivetrain, this::getGridTrajectory),
+            new DriveTrajectory(drivetrain, toGrid::getAllianceTrajectory),
             Autos.placeHigh(arm, claw),
             new WaitCommand(0.2)
         );
