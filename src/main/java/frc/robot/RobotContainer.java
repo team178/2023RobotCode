@@ -12,6 +12,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lights;
+import frc.robot.utils.Combo;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
@@ -117,6 +118,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
         m_auxBox.leftStick().onTrue(m_lights.runYellow());
         m_auxBox.rightStick().onTrue(m_lights.runPurple());
         m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
+
+        new Combo(m_auxBox.getHID())
+            .quarterCircleKick()
+            .onTrue(Autos.placeHigh(m_arm, m_claw));
 
     }
     
