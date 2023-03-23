@@ -31,6 +31,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.utils.CheesyDriveHelper;
+import frc.robot.utils.DriveSignal;
 import frc.robot.utils.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
@@ -51,6 +53,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.kS, DriveConstants.kV,
       DriveConstants.kA);
+
+  private final CheesyDriveHelper m_cheesyHelper = new CheesyDriveHelper();
 
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
@@ -229,6 +233,26 @@ public class Drivetrain extends SubsystemBase {
     var wheelSpeeds = DriveConstants.kDriveKinematics.toWheelSpeeds(
         new ChassisSpeeds(-forward, 0.0, -rot));
     setWheelSpeeds(wheelSpeeds);
+  }
+  
+  public Command cheesyDrive(DoubleSupplier forward, DoubleSupplier rot) {
+    return this.run(() -> {
+
+      double throttle = forward.getAsDouble();
+
+      DriveSignal signal = m_cheesyHelper.cheesyDrive(
+          throttle,
+          rot.getAsDouble(),
+          Math.abs(throttle) < 0.3, // Quick turn range, for all I know this might be better on a trigger
+          false
+      );
+
+      setWheelSpeeds(
+        signal.getLeft() * DriveConstants.kMaxSpeedMetersPerSecond * m_speedMult,
+        signal.getRight() * DriveConstants.kMaxSpeedMetersPerSecond * m_speedMult
+      );
+
+    });
   }
 
   @Override
