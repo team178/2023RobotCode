@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,14 +11,14 @@ import frc.robot.Constants.ClawConstants;
 
 public class Claw extends SubsystemBase {
     private Solenoid m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, ClawConstants.kChannel);
-    private AnalogPotentiometer m_ultrasonic = new AnalogPotentiometer(0, 6);
+    private DigitalInput m_photosensor = new DigitalInput(2);
 
     public Claw() {
         m_solenoid.set(false);
     }
 
-    public double getUltrasonicDistance() {
-        return m_ultrasonic.get();
+    public boolean getPhotosensor() {
+        return !m_photosensor.get();
     }
 
     public void toggle() {
@@ -30,6 +31,10 @@ public class Claw extends SubsystemBase {
 
     public Command open() {
         return Commands.runOnce(() -> m_solenoid.set(true));
+    }
+
+    public void periodic() {
+        SmartDashboard.putBoolean("photosensor", getPhotosensor());
     }
 
 }
