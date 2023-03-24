@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveTrajectory;
 import frc.robot.subsystems.Arm;
@@ -20,10 +21,11 @@ public class MidCubeCharge extends AutoCommand {
     }
 
     public MidCubeCharge(Arm arm, Claw claw, Drivetrain drivetrain) {
-        getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetOnCharge", new PathConstraints(2, 5), true));
+        getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetOnCharge", new PathConstraints(1.0, 5), true));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
+            new WaitCommand(1),
             new DriveTrajectory(drivetrain, getOnCharge::getAllianceTrajectory)
         );
     }
