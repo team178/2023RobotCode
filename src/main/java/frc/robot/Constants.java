@@ -90,6 +90,7 @@ public final class Constants {
 
   public static class ClawConstants {
     public static int kChannel = 6;
+    public static int kUltrasonicPort = 3;
   }
   
   public static class ArmConstants {

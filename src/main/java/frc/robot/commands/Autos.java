@@ -27,9 +27,12 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.auto.AutoCommand;
-import frc.robot.commands.auto.ChargeCube;
-import frc.robot.commands.auto.ChargeOverCube;
-import frc.robot.commands.auto.ThreeSixConeCube;
+import frc.robot.commands.auto.BumpConeLeave;
+import frc.robot.commands.auto.MidCubeCharge;
+import frc.robot.commands.auto.MidCubeChargeOverBack;
+import frc.robot.commands.auto.SubConeCube;
+import frc.robot.commands.auto.SubConeCubeCharge;
+import frc.robot.commands.auto.SubConeLeave;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
@@ -90,9 +93,17 @@ public final class Autos {
     
     public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain) {
         autoChooser.setDefaultOption("None", new AutoCommand());
-        autoChooser.addOption("ThreeSixConeCube", new ThreeSixConeCube(arm, claw, drivetrain));
-        autoChooser.addOption("ChargeCube", new ChargeCube(arm, claw, drivetrain));
-        autoChooser.addOption("ChargeOverCube", new ChargeOverCube(arm, claw, drivetrain));
+
+        autoChooser.addOption("SubConeLeave", new SubConeLeave(arm, claw, drivetrain));
+        autoChooser.addOption("SubConeCube", new SubConeCube(arm, claw, drivetrain));
+        autoChooser.addOption("SubConeCubeCharge", new SubConeCubeCharge(arm, claw, drivetrain));
+
+        autoChooser.addOption("MidCubeCharge", new MidCubeCharge(arm, claw, drivetrain));
+        autoChooser.addOption("MidCubeChargeOverBack", new MidCubeChargeOverBack(arm, claw, drivetrain));
+
+        autoChooser.addOption("BumpConeLeave", new BumpConeLeave(arm, claw, drivetrain));
+        autoChooser.addOption("BumpConeCube", new BumpConeLeave(arm, claw, drivetrain));
+
         Shuffleboard.getTab("Autos")
             .add("Auto", autoChooser)
             .withWidget(BuiltInWidgets.kSplitButtonChooser)
