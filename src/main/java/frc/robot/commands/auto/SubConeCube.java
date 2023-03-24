@@ -17,6 +17,7 @@ public class SubConeCube extends AutoCommand {
 
     private AutoTrajectoryPair toCube;
     private AutoTrajectoryPair toGrid;
+    private AutoTrajectoryPair funny;
 
     @Override
     public Pose2d getStartPosition() {
@@ -27,6 +28,7 @@ public class SubConeCube extends AutoCommand {
 
         toCube = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToCube", new PathConstraints(1.75, 5), true));
         toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToGrid", new PathConstraints(2,5)));
+        funny = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToCube", new PathConstraints(1.75, 5), true));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
@@ -38,13 +40,16 @@ public class SubConeCube extends AutoCommand {
                     arm.setPosition(ArmPosition.BACK),
                     claw.open()
                 )
+            ).deadlineWith(
+                Commands.waitUntil(claw::getPhotosensor).andThen(claw.close())
             ),
             claw.close(),
             new WaitCommand(0.3),
             arm.setPosition(ArmPosition.HOME),
             new DriveTrajectory(drivetrain, toGrid::getAllianceTrajectory),
             Autos.placeHigh(arm, claw),
-            new WaitCommand(0.2)
+            new WaitCommand(0.2),
+            new DriveTrajectory(drivetrain, funny::getAllianceTrajectory)
         );
     }
 
