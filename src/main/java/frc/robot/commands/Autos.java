@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.auto.BumpConeCube;
 import frc.robot.commands.auto.BumpConeLeave;
 import frc.robot.commands.auto.MidCubeCharge;
 import frc.robot.commands.auto.MidCubeChargeOverBack;
@@ -102,7 +103,7 @@ public final class Autos {
         autoChooser.addOption("MidCubeChargeOverBack", new MidCubeChargeOverBack(arm, claw, drivetrain));
 
         autoChooser.addOption("BumpConeLeave", new BumpConeLeave(arm, claw, drivetrain));
-        autoChooser.addOption("BumpConeCube", new BumpConeLeave(arm, claw, drivetrain));
+        autoChooser.addOption("BumpConeCube", new BumpConeCube(arm, claw, drivetrain));
 
         Shuffleboard.getTab("Autos")
             .add("Auto", autoChooser)

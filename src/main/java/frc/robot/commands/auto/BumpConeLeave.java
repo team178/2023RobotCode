@@ -21,11 +21,11 @@ public class BumpConeLeave extends AutoCommand {
 
     public BumpConeLeave(Arm arm, Claw claw, Drivetrain drivetrain) {
 
-        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("BumpDriveToCube", new PathConstraints(1.75, 5), true));
+        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("BumpDriveToCube", new PathConstraints(1.0, 5), true));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
-            new WaitCommand(0.2),
+            new WaitCommand(1),
             new DriveTrajectory(drivetrain, toCube::getAllianceTrajectory)
         );
     }

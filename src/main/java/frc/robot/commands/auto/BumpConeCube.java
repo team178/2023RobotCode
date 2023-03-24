@@ -24,8 +24,8 @@ public class BumpConeCube extends AutoCommand {
 
     public BumpConeCube(Arm arm, Claw claw, Drivetrain drivetrain) {
 
-        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("BumpDriveToCube", new PathConstraints(1.75, 5), true));
-        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("BumpDriveToGrid", new PathConstraints(2,5)));
+        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("BumpDriveToCube", new PathConstraints(1.0, 5), true));
+        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("BumpDriveToGrid", new PathConstraints(1.0,5)));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
@@ -33,10 +33,12 @@ public class BumpConeCube extends AutoCommand {
             Commands.parallel(
                 new DriveTrajectory(drivetrain, toCube::getAllianceTrajectory),
                 Commands.sequence(
-                    new WaitCommand(0.7),
+                    new WaitCommand(2),
                     arm.setPosition(ArmPosition.BACK),
                     claw.open()
                 )
+            ).deadlineWith(
+                Commands.waitUntil(claw::getPhotosensor).andThen(claw.close())
             ),
             claw.close(),
             new WaitCommand(0.3),
