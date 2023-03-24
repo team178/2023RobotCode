@@ -13,21 +13,20 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 
-public class ThreeSixConeCubeCharge extends AutoCommand {
+public class SubConeCube extends AutoCommand {
 
     private AutoTrajectoryPair toCube;
     private AutoTrajectoryPair toGrid;
-    private AutoTrajectoryPair toCharge;
 
     @Override
     public Pose2d getStartPosition() {
         return toCube.getAllianceTrajectory().getInitialPose();
     }
 
-    public ThreeSixConeCubeCharge(Arm arm, Claw claw, Drivetrain drivetrain) {
-        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("36DriveToCube", new PathConstraints(1.75, 5), true));
-        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("36DriveToGrid", new PathConstraints(2,5)));
-        toCharge = new AutoTrajectoryPair(PathPlanner.loadPath("GridToCharge", new PathConstraints(2, 4.5)));
+    public SubConeCube(Arm arm, Claw claw, Drivetrain drivetrain) {
+
+        toCube = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToCube", new PathConstraints(1.75, 5), true));
+        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToGrid", new PathConstraints(2,5)));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
@@ -45,8 +44,7 @@ public class ThreeSixConeCubeCharge extends AutoCommand {
             arm.setPosition(ArmPosition.HOME),
             new DriveTrajectory(drivetrain, toGrid::getAllianceTrajectory),
             Autos.placeHigh(arm, claw),
-            new WaitCommand(0.2),
-            new DriveTrajectory(drivetrain, toCharge::getAllianceTrajectory)
+            new WaitCommand(0.2)
         );
     }
 

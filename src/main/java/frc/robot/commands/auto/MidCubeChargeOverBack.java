@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 
-public class ChargeOverCube extends AutoCommand {
+public class MidCubeChargeOverBack extends AutoCommand {
 
     private AutoTrajectoryPair getOnCharge;
     private AutoTrajectoryPair getOffCharge;
@@ -21,11 +21,11 @@ public class ChargeOverCube extends AutoCommand {
         return getOnCharge.getAllianceTrajectory().getInitialPose();
     }
 
-    public ChargeOverCube(Arm arm, Claw claw, Drivetrain drivetrain) {
+    public MidCubeChargeOverBack(Arm arm, Claw claw, Drivetrain drivetrain) {
 
-        getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("GoOverCharge", new PathConstraints(2, 5), true));
-        getOffCharge = new AutoTrajectoryPair(PathPlanner.loadPath("GetOffCharge", new PathConstraints(0.75, 5), true));
-        getBackOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("GetBackOnCharge", new PathConstraints(1, 5)));
+        getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGoOverCharge", new PathConstraints(2, 5), true));
+        getOffCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetOffCharge", new PathConstraints(0.75, 5), true));
+        getBackOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetBackOnCharge", new PathConstraints(1, 5)));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),
