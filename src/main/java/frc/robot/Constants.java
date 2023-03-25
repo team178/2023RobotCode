@@ -68,7 +68,7 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(21);
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
-    public static final double kMaxSpeedMetersPerSecond = 6;
+    public static final double kMaxSpeedMetersPerSecond = 5.5;
     public static final double kMaxRotationSpeedMetersPerSecond = 6;
 
     public static final double kS = 0.50892;
@@ -124,5 +124,12 @@ public final class Constants {
   public static class LightConstants {
     public static final int kLightBarPWMPort = 9;
     public static final int kLightBarLength = 8;
+  }
+
+  public static class GregtechConstants {
+    private static boolean loveForGreg = true; //always
+    private static String thoughtsOnGreg = "Amazing and wonderful!";
+    private static int numberOfHoursOnGreg = Integer.MAX_VALUE;
+    private static int numberOfGregificationsCompleted = 2;
   }
 }

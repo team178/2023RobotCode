@@ -245,12 +245,28 @@ public class Drivetrain extends SubsystemBase {
   
   public Command cheesyDrive(DoubleSupplier forward, DoubleSupplier rot) {
     return this.run(() -> {
+      double throttleThreshold = 0.07;
+      double rotationThreshold = 0.07;
 
-      double throttle = forward.getAsDouble();
+      SmartDashboard.putNumber("rawControllerThrottle", forward.getAsDouble());
+      SmartDashboard.putNumber("rawControllerRotation", rot.getAsDouble());
+
+      double throttle = (1 - throttleThreshold) * Math.pow(-1 * forward.getAsDouble(), 3) + throttleThreshold * Math.signum(forward.getAsDouble());
+      double rotation = (1 - rotationThreshold) * Math.pow(rot.getAsDouble(), 3) * 0.8 + rotationThreshold * Math.signum(rot.getAsDouble());
+      
+      SmartDashboard.putNumber("AdjustedThrottle", throttle);
+      SmartDashboard.putNumber("AdjustedRotation", rotation);
+
+      if(Math.abs(forward.getAsDouble()) < 0.12) throttle = 0;
+      if(Math.abs(rot.getAsDouble()) < 0.12) rotation = 0;
+
+      // Uncomment below for linear
+      // throttle = (-1 * forward.getAsDouble());
+      // rotation = (rot.getAsDouble() * 0.8);
 
       DriveSignal signal = m_cheesyHelper.cheesyDrive(
-          -throttle,
-          rot.getAsDouble() * 0.8,
+          throttle,
+          rotation,
           Math.abs(throttle) < 0.3, // Quick turn range, for all I know this might be better on a trigger
           false
       );
@@ -313,7 +329,7 @@ public class Drivetrain extends SubsystemBase {
 
     // SmartDashboard.putNumber("LeftSetpoint", m_rightPIDController.getSetpoint());
     // SmartDashboard.putNumber("RightSetpoint", m_rightPIDController.getSetpoint());
-    // SmartDashboard.putNumber("level", getLevelHeading());
+    SmartDashboard.putNumber("level", getLevelHeading());
   }
 
   @Override
