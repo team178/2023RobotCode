@@ -242,7 +242,7 @@ public class Drivetrain extends SubsystemBase {
 
       DriveSignal signal = m_cheesyHelper.cheesyDrive(
           -throttle,
-          rot.getAsDouble() * (DriveConstants.kMaxRotationSpeedMetersPerSecond/ DriveConstants.kMaxSpeedMetersPerSecond),
+          rot.getAsDouble() * 0.8,
           Math.abs(throttle) < 0.3, // Quick turn range, for all I know this might be better on a trigger
           false
       );
