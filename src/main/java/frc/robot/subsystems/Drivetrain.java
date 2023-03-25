@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -39,6 +40,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final SPI.Port sPort = SPI.Port.kOnboardCS0;
   private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro(sPort);
+  private final AnalogGyro m_level = new AnalogGyro(0);
 
   private WPI_TalonFX m_leftMotor = new WPI_TalonFX(DriveConstants.kL1MotorPort);
   private WPI_TalonFX m_leftFollower = new WPI_TalonFX(DriveConstants.kL2MotorPort);
@@ -114,10 +116,12 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetGyro() {
     m_gyro.reset();
+    m_level.reset();
   }
 
   public void calibrateGyro() {
     m_gyro.calibrate();
+    m_level.calibrate();
   }
 
   public void resetEncoders() {
@@ -137,6 +141,10 @@ public class Drivetrain extends SubsystemBase {
 
   public double getGyroHeading() {
     return m_gyro.getAngle();
+  }
+
+  public double getLevelHeading() {
+    return m_level.getAngle();
   }
 
   public Rotation2d getGyroRotation() {
@@ -305,6 +313,7 @@ public class Drivetrain extends SubsystemBase {
 
     // SmartDashboard.putNumber("LeftSetpoint", m_rightPIDController.getSetpoint());
     // SmartDashboard.putNumber("RightSetpoint", m_rightPIDController.getSetpoint());
+    // SmartDashboard.putNumber("level", getLevelHeading());
   }
 
   @Override
