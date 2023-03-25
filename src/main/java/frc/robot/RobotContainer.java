@@ -53,7 +53,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
         PathPlannerServer.startServer(5811);
 
-        CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture(0);
+        CameraServer.startAutomaticCapture(1);
 
         // Configure the trigger bindings
         configureBindings();
