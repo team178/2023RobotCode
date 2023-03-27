@@ -94,7 +94,7 @@ public class Drivetrain extends SubsystemBase {
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     // Current limiting to prevent brownouts
-    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 80, 70, 0.5);
+    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 80, 80, 0);
     m_leftMotor.configStatorCurrentLimit(cur_limit);
     m_leftFollower.configStatorCurrentLimit(cur_limit);
     m_rightMotor.configStatorCurrentLimit(cur_limit);
@@ -268,7 +268,7 @@ public class Drivetrain extends SubsystemBase {
           throttle,
           rotation,
           Math.abs(throttle) < 0.3, // Quick turn range, for all I know this might be better on a trigger
-          false
+          true
       );
 
       setWheelSpeeds(
@@ -309,17 +309,17 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData(m_field);
     SmartDashboard.putData(m_gyro);
 
-    // SmartDashboard.putNumber("Left Temp.", m_leftMotor.getTemperature());
-    // SmartDashboard.putNumber("Right Temp.", m_rightMotor.getTemperature());
+    SmartDashboard.putNumber("Left Temp.", m_leftMotor.getTemperature());
+    SmartDashboard.putNumber("Right Temp.", m_rightMotor.getTemperature());
 
-    // SmartDashboard.putNumber("Left aTemp.", m_leftFollower.getTemperature());
-    // SmartDashboard.putNumber("Right aTemp.", m_rightFollower.getTemperature());
+    SmartDashboard.putNumber("Left aTemp.", m_leftFollower.getTemperature());
+    SmartDashboard.putNumber("Right aTemp.", m_rightFollower.getTemperature());
 
-    // SmartDashboard.putNumber("LeftCurrent", m_leftMotor.getStatorCurrent());
-    // SmartDashboard.putNumber("RightCurrent", m_rightMotor.getStatorCurrent());
+    SmartDashboard.putNumber("LeftCurrent", m_leftMotor.getStatorCurrent());
+    SmartDashboard.putNumber("RightCurrent", m_rightMotor.getStatorCurrent());
 
-    // SmartDashboard.putNumber("LeftVolts", m_leftMotor.getMotorOutputVoltage());
-    // SmartDashboard.putNumber("RightVolts",m_leftMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("LeftVolts", m_leftMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("RightVolts",m_leftMotor.getMotorOutputVoltage());
 
     // SmartDashboard.putNumber("LeftEncoderVel", getLeftEncoderVelocityMeters());
     // SmartDashboard.putNumber("RightEncoderVel", getRightEncoderVelocityMeters());
