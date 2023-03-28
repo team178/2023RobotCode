@@ -19,6 +19,7 @@ import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -60,9 +61,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
         configureBindings();
         
         Autos.initAutoChooser(m_arm, m_claw, m_drivetrain);
-        Shuffleboard.getTab("Autos")
-        .add(m_autoPreview)
-        .withSize(9, 3);
+        
+        setupShuffleboard();
     }
 
     /**
@@ -128,6 +128,33 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
             .quarterCircleKick()
             .onTrue(Autos.placeHigh(m_arm, m_claw));
 
+    }
+
+    private void setupShuffleboard() {
+
+        // Auto selector
+        Shuffleboard.getTab("Autos")
+            .add(m_autoPreview)
+            .withSize(9, 3);
+
+        // Pre-flight indicators
+        // make sure it's all green so we don't have to buy more gearboxes or NEOs
+        ShuffleboardTab preflightTab = Shuffleboard.getTab("Pre-flight");
+
+        preflightTab.addBoolean("Upper Limit Switch", m_arm::isUpperHome)
+            .withPosition(0, 0);
+        preflightTab.addBoolean("Lower Limit Switch", m_arm::isLowerHome)
+            .withPosition(0, 1);
+
+        preflightTab.addDouble("Lower Encoder", m_arm::getLowerPosition)
+            .withPosition(1, 1);
+        preflightTab.addDouble("Upper Encoder", m_arm::getUpperPosition)
+            .withPosition(1, 0);
+
+        preflightTab.addDouble("Lower Home Pos", () -> ArmPosition.HOME.lower)
+            .withPosition(2, 1);
+        preflightTab.addDouble("Upper Home Pos", () -> ArmPosition.HOME.upper)
+            .withPosition(2, 0);
     }
     
     public void disabledPeriodic() {

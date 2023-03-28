@@ -154,11 +154,11 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isLowerHome() {
-    return !m_lowerHome.get();
+    return m_lowerHome.get();
   }
 
   public boolean isUpperHome() {
-    return !m_upperHome.get();
+    return m_upperHome.get();
   }
 
   public double getLowerPosition() {
