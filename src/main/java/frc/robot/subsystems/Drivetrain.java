@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.utils.CheesyDriveHelper;
@@ -243,7 +244,7 @@ public class Drivetrain extends SubsystemBase {
     setWheelSpeeds(wheelSpeeds);
   }
   
-  public Command cheesyDrive(DoubleSupplier forward, DoubleSupplier rot) {
+  public Command cheesyDrive(DoubleSupplier forward, DoubleSupplier rot, Trigger quickTurnTrigger) {
     return this.run(() -> {
       double throttleThreshold = 0.07;
       double rotationThreshold = 0.07;
@@ -257,6 +258,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("AdjustedThrottle", throttle);
       SmartDashboard.putNumber("AdjustedRotation", rotation);
 
+      // why are there more deadbands
       if(Math.abs(forward.getAsDouble()) < 0.12) throttle = 0;
       if(Math.abs(rot.getAsDouble()) < 0.12) rotation = 0;
 
@@ -267,7 +269,7 @@ public class Drivetrain extends SubsystemBase {
       DriveSignal signal = m_cheesyHelper.cheesyDrive(
           throttle,
           rotation,
-          Math.abs(throttle) < 0.3, // Quick turn range, for all I know this might be better on a trigger
+          quickTurnTrigger.getAsBoolean(), // Math.abs(throttle) < 0.3, // Quick turn range, for all I know this might be better on a trigger
           true
       );
 

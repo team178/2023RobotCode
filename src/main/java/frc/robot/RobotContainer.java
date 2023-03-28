@@ -80,7 +80,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
         //     m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2));
 
         m_drivetrain.setDefaultCommand(
-            m_drivetrain.cheesyDrive(m_driverController::getLeftY, m_driverController::getRightX)
+            m_drivetrain.cheesyDrive(m_driverController::getLeftY, m_driverController::getRightX, m_driverController.rightTrigger())
         );
 
         // Drivebase slowdown triggers

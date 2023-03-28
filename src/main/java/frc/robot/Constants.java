@@ -77,6 +77,7 @@ public final class Constants {
 
     public static final double kPVel = 3.1285;
 
+    // This object is why I hate Java - Patrick
     public static final Matrix<N3, N1> kVisionTrustMatrix = m_createVisionTrustMatrix();
 
     private static Matrix<N3, N1> m_createVisionTrustMatrix() {
