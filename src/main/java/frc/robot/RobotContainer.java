@@ -155,6 +155,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
             .withPosition(2, 1);
         preflightTab.addDouble("Upper Home Pos", () -> ArmPosition.HOME.upper)
             .withPosition(2, 0);
+
+        preflightTab.addDouble("Level", m_drivetrain::getLevelHeading)
+            .withPosition(0, 2);
     }
     
     public void disabledPeriodic() {
