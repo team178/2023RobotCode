@@ -17,6 +17,7 @@ import frc.robot.utils.Combo;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -41,6 +42,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
     private final Arm m_arm = new Arm();
     private final Claw m_claw = new Claw();
 
+    private final UsbCamera camera0;
+    private final UsbCamera camera1;
+
     private final CommandXboxController m_driverController =
         new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
@@ -54,8 +58,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
         PathPlannerServer.startServer(5811);
 
-        CameraServer.startAutomaticCapture(0);
-        CameraServer.startAutomaticCapture(1);
+        camera0 = CameraServer.startAutomaticCapture(0);
+        camera1 = CameraServer.startAutomaticCapture(1);
 
         // Configure the trigger bindings
         configureBindings();
@@ -143,6 +147,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
         // Pre-flight indicators
         // make sure it's all green so we don't have to buy more gearboxes or NEOs
         ShuffleboardTab preflightTab = Shuffleboard.getTab("Pre-flight");
+        ShuffleboardTab cameraTab = Shuffleboard.getTab("Cameras");
 
         preflightTab.addBoolean("Upper Limit Switch", m_arm::isUpperHome)
             .withPosition(0, 0);
@@ -161,6 +166,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
         preflightTab.addDouble("Level", m_drivetrain::getLevelHeading)
             .withPosition(0, 2);
+
+        cameraTab.add("Camera", CameraServer.getVideo().getSource());
+        
     }
     
     public void disabledPeriodic() {
@@ -178,4 +186,4 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
         m_drivetrain.resetPose(selectedAuto.getStartPosition());
         return selectedAuto;
     }
-    }
+}
