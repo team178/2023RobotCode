@@ -76,12 +76,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
      */
     private void configureBindings() {
 
-        // m_drivetrain.setDefaultCommand(
-        //     m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2));
-
         m_drivetrain.setDefaultCommand(
-            m_drivetrain.cheesyDrive(m_driverController::getLeftY, m_driverController::getRightX, m_driverController.rightTrigger())
-        );
+            m_drivetrain.arcadeDrive(m_driverController::getLeftY, m_driverController::getRightX, 0.2));
+
+        // Cheezy drive makes the falcons overheat
+        // Why? I don't know.
+        // Don't use it if you want to drive for more than 5 minutes
+        // m_drivetrain.setDefaultCommand(
+        //     m_drivetrain.cheesyDrive(m_driverController::getLeftY, m_driverController::getRightX, m_driverController.rightTrigger())
+        // );
 
         // Drivebase slowdown triggers
         // The logic works so we'll just leave it
@@ -92,7 +95,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
         m_driverController.leftTrigger()
             .whileTrue(
-                Commands.run(() -> m_drivetrain.setSpeedMult(0.1)))
+                Commands.run(() -> m_drivetrain.setSpeedMult(0.2)))
             .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
 
         m_auxBox.b().onTrue(
