@@ -97,10 +97,10 @@ public final class Autos {
 
         autoChooser.addOption("SubConeLeave", new SubConeLeave(arm, claw, drivetrain));
         autoChooser.addOption("SubConeCube", new SubConeCube(arm, claw, drivetrain));
-        autoChooser.addOption("SubConeCubeCharge", new SubConeCubeCharge(arm, claw, drivetrain));
+        // autoChooser.addOption("SubConeCubeCharge", new SubConeCubeCharge(arm, claw, drivetrain));
 
         autoChooser.addOption("MidCubeCharge",/*parker wuz here*/ new MidCubeCharge(arm, claw, drivetrain));
-        autoChooser.addOption("MidCubeChargeOverBack", new MidCubeChargeOverBack(arm, claw, drivetrain));
+        // autoChooser.addOption("MidCubeChargeOverBack", new MidCubeChargeOverBack(arm, claw, drivetrain));
 
         autoChooser.addOption("BumpConeLeave", new BumpConeLeave(arm, claw, drivetrain));
         autoChooser.addOption("BumpConeCube", new BumpConeCube(arm, claw, drivetrain));

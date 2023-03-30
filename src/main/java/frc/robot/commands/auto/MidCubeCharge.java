@@ -22,7 +22,7 @@ public class MidCubeCharge extends AutoCommand {
     }
 
     public MidCubeCharge(Arm arm, Claw claw, Drivetrain drivetrain) {
-        getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetOnCharge", new PathConstraints(1.0, 5), true));
+        getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetOnCharge", new PathConstraints(1.75, 5), true));
 
         this.addCommands(
             Autos.placeHigh(arm, claw),

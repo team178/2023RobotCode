@@ -27,7 +27,7 @@ public class SubConeCube extends AutoCommand {
     public SubConeCube(Arm arm, Claw claw, Drivetrain drivetrain) {
 
         toCube = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToCube", new PathConstraints(1.75, 5), true));
-        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToGrid", new PathConstraints(2,5)));
+        toGrid = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToGrid", new PathConstraints(1.5,5)));
         funny = new AutoTrajectoryPair(PathPlanner.loadPath("SubDriveToCube", new PathConstraints(1.75, 5), true));
 
         this.addCommands(
