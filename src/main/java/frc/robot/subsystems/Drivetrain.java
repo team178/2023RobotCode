@@ -117,9 +117,11 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetGyro() {
     m_gyro.reset();
-    m_level.reset();
   }
 
+  public void resetLevel() {
+    m_level.reset();
+  }
   public void calibrateGyro() {
     m_gyro.calibrate();
     m_level.calibrate();

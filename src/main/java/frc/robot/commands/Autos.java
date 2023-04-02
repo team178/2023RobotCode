@@ -30,9 +30,8 @@ import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.auto.BumpConeCube;
 import frc.robot.commands.auto.BumpConeLeave;
 import frc.robot.commands.auto.MidCubeCharge;
-import frc.robot.commands.auto.MidCubeChargeOverBack;
+import frc.robot.commands.auto.PlaceConeAuto;
 import frc.robot.commands.auto.SubConeCube;
-import frc.robot.commands.auto.SubConeCubeCharge;
 import frc.robot.commands.auto.SubConeLeave;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -94,6 +93,8 @@ public final class Autos {
     
     public static void initAutoChooser(Arm arm, Claw claw, Drivetrain drivetrain) {
         autoChooser.setDefaultOption("None", new AutoCommand());
+
+        autoChooser.setDefaultOption("PlaceHighOnly", new PlaceConeAuto(arm, claw));
 
         autoChooser.addOption("SubConeLeave", new SubConeLeave(arm, claw, drivetrain));
         autoChooser.addOption("SubConeCube", new SubConeCube(arm, claw, drivetrain));

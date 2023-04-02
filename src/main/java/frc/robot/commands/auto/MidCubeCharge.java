@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveTrajectory;
@@ -27,6 +28,11 @@ public class MidCubeCharge extends AutoCommand {
         this.addCommands(
             Autos.placeHigh(arm, claw),
             new WaitCommand(1),
+            Commands.runOnce(
+                () -> {
+                    drivetrain.resetLevel();
+                }
+            ),
             new DriveTrajectory(drivetrain, getOnCharge::getAllianceTrajectory),
             new DriveUntilLevel(drivetrain, 0.4)
         );
