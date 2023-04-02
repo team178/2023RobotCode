@@ -25,9 +25,9 @@ public class DriveUntilLevel extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (-6 > m_drivetrain.getLevelHeading()) {
+    if (-8 > m_drivetrain.getLevelHeading()) {
       m_drivetrain.arcadeDrive(-m_speed, 0);
-    } else if (m_drivetrain.getLevelHeading() > 6) {
+    } else if (m_drivetrain.getLevelHeading() > 8) {
       m_drivetrain.arcadeDrive(m_speed, 0);
     } else {
       m_drivetrain.setWheelSpeeds(0, 0);
