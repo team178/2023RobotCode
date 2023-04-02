@@ -83,6 +83,9 @@ public class Arm extends SubsystemBase {
 
     setLowerPosition(m_position.lower);
     setUpperPosition(m_position.upper);    
+
+    m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8));
+    m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
   }
 
   public void setBrake() {
@@ -166,19 +169,19 @@ public class Arm extends SubsystemBase {
   }
 
   public double getUpperPosition() {
-    return m_upperEncoder.getDistance();
+    return Units.rotationsToRadians(m_upperEncoder.getAbsolutePosition() - m_upperEncoder.getPositionOffset());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if (isLowerHome()) {
-      resetLowerEncoder();
+      // resetLowerEncoder();
       m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8));
     }
 
     if (isUpperHome()) {
-     resetUpperEncoder();
+    //  resetUpperEncoder();
       m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
     }
 
