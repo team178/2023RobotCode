@@ -19,6 +19,8 @@ import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.LayoutType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -114,10 +116,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
         m_auxBox.x().onTrue(
             m_arm.setPosition(ArmPosition.HIGH));
 
-        m_auxBox.leftBumper().onTrue(
-            Commands.runOnce(() -> {
-            m_claw.toggle();
-            }));
+        m_auxBox.leftBumper().onTrue(m_claw.toggle());
 
         // "Jog" functionality
         m_auxBox.povUpLeft().whileTrue(m_arm.bumpLower(-0.01));
@@ -166,6 +165,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
         preflightTab.addDouble("Level", m_drivetrain::getLevelHeading)
             .withPosition(0, 2);
+
+        var positionList = preflightTab.getLayout("Arm Positions", BuiltInLayouts.kList)
+            .withPosition(3, 0)
+            .withSize(2, 3);
+
+        positionList.add("Home", m_arm.setPosition(ArmPosition.HOME));
+        positionList.add("Mid", m_arm.setPosition(ArmPosition.LOW));
+        positionList.add("High", m_arm.setPosition(ArmPosition.HIGH));
+        positionList.add("Substation", m_arm.setPosition(ArmPosition.SUBSTATION));
+        positionList.add("Back", m_arm.setPosition(ArmPosition.BACK));
+        
+        preflightTab.add("Claw", m_claw.toggle()).withPosition(5, 0);
 
         cameraTab.add("Camera", CameraServer.getVideo().getSource());
         

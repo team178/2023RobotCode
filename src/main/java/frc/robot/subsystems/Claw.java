@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
@@ -21,8 +22,8 @@ public class Claw extends SubsystemBase {
         return !m_photosensor.get();
     }
 
-    public void toggle() {
-        m_solenoid.toggle();
+    public CommandBase toggle() {
+        return Commands.runOnce(() -> m_solenoid.toggle());
     }
 
     public Command close() {

@@ -52,6 +52,11 @@
       "/Shuffleboard/Autos/Auto": "String Chooser",
       "/Shuffleboard/Autos/Field": "Field2d",
       "/Shuffleboard/Autos/SendableChooser[0]": "String Chooser",
+      "/Shuffleboard/Pre-flight/Arm Positions/Back": "Command",
+      "/Shuffleboard/Pre-flight/Arm Positions/High": "Command",
+      "/Shuffleboard/Pre-flight/Arm Positions/Home": "Command",
+      "/Shuffleboard/Pre-flight/Arm Positions/Mid": "Command",
+      "/Shuffleboard/Pre-flight/Arm Positions/Substation": "Command",
       "/SmartDashboard/ADXRS450_Gyro[0]": "Gyro",
       "/SmartDashboard/ArmMech2d": "Mechanism2d",
       "/SmartDashboard/Field": "Field2d",
@@ -125,8 +130,5 @@
         "open": true
       }
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
