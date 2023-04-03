@@ -84,8 +84,8 @@ public class Arm extends SubsystemBase {
     setLowerPosition(m_position.lower);
     setUpperPosition(m_position.upper);    
 
-    m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8));
-    m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
+    // m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8) - (7/6));
+    // m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
   }
 
   public void setBrake() {
@@ -165,7 +165,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getLowerPosition() {
-    return m_lowerEncoder.getDistance();
+    return Units.rotationsToRadians(m_lowerEncoder.getAbsolutePosition() - m_lowerEncoder.getPositionOffset() - (1/6));
   }
 
   public double getUpperPosition() {
@@ -175,15 +175,15 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (isLowerHome()) {
+    // if (isLowerHome()) {
       // resetLowerEncoder();
-      m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8));
-    }
+      // m_lowerEncoder.setPositionOffset(Units.degreesToRotations(-8) - (7/6));
+    // }
 
-    if (isUpperHome()) {
+    // if (isUpperHome()) {
     //  resetUpperEncoder();
-      m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
-    }
+      // m_upperEncoder.setPositionOffset(Units.degreesToRotations(-14));
+    // }
 
     // if (m_position.equals(ArmPosition.HOLD)) {
     //   setLowerPosition(getLowerPosition());
@@ -195,6 +195,8 @@ public class Arm extends SubsystemBase {
 
     double lowerOut = -m_lowerController.calculate(getLowerPosition());
     double upperOutput = -m_upperController.calculate(getUpperPosition());
+
+    // This is all the limit switches do :)
     
     if (lowerOut < 0.1 && isLowerHome()) {
       m_lowerMotor.setVoltage(0);
