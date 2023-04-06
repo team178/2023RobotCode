@@ -95,7 +95,7 @@ public class Drivetrain extends SubsystemBase {
     m_rightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     // Current limiting to prevent brownouts
-    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 80, 80, 0);
+    StatorCurrentLimitConfiguration cur_limit = new StatorCurrentLimitConfiguration(true, 100, 100, 0);
     m_leftMotor.configStatorCurrentLimit(cur_limit);
     m_leftFollower.configStatorCurrentLimit(cur_limit);
     m_rightMotor.configStatorCurrentLimit(cur_limit);
