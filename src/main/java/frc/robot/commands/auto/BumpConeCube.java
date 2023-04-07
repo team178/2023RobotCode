@@ -38,7 +38,9 @@ public class BumpConeCube extends AutoCommand {
                     claw.open()
                 )
             ).deadlineWith(
-                Commands.waitUntil(claw::getPhotosensor).andThen(claw.close())
+                Commands.waitSeconds(0.7) // delay is here so that the photosensor does not trigger before it gets out of range of the cone
+                    .andThen(
+                        Commands.waitUntil(claw::getPhotosensor).andThen(claw.close()))
             ),
             claw.close(),
             new WaitCommand(0.3),
