@@ -28,7 +28,7 @@ public enum ArmPosition {
 }
 ```
 
-The setpoint that the arm tries to reach can be changed using the [`setPosition`](https://github.com/team178/2023RobotCode/blob/breakdown/src/main/java/frc/robot/subsystems/Arm.java#L119-L129) funcitonal command. By default, it tries to reach the `HOME` setpoint. We originally had a `HOLD` value in the enum, with no setpoint measurements, so we could create a special case where the arm would just try to hold it's current position, but we ran into issues with that and the encoders, so we didn't pursue it much further and just commented out the code.
+The setpoint that the arm tries to reach can be changed using the [`setPosition`](https://github.com/team178/2023RobotCode/blob/main/src/main/java/frc/robot/subsystems/Arm.java#L119-L129) funcitonal command. By default, it tries to reach the `HOME` setpoint. We originally had a `HOLD` value in the enum, with no setpoint measurements, so we could create a special case where the arm would just try to hold it's current position, but we ran into issues with that and the encoders, so we didn't pursue it much further and just commented out the code.
 
 To be able to test the arm encoders in the beginning, we implemented a `Mechanism2d` display. This allowed us to see a visual of the arm, and see where the encoders think the arm is. This didn't have much use after that.
 
