@@ -28,7 +28,7 @@ public enum ArmPosition {
 }
 ```
 
-Using the `setPosition` funcitonal command, which setpoint the arm is trying to reach can be changed. By default, it tries to reach the `HOME` setpoint. We originally had the `HOLD` value, with no setpoint measurements, so we could create a special case where the arm would just try to hold it's current position, but we ran into issues with that and the encoders, so we didn't pursue it much further and just commented out the code.
+The setpoint that the arm tries to reach can be changed using the [`setPosition`](https://github.com/team178/2023RobotCode/blob/breakdown/src/main/java/frc/robot/subsystems/Arm.java#L119-L129) funcitonal command. By default, it tries to reach the `HOME` setpoint. We originally had a `HOLD` value in the enum, with no setpoint measurements, so we could create a special case where the arm would just try to hold it's current position, but we ran into issues with that and the encoders, so we didn't pursue it much further and just commented out the code.
 
 To be able to test the arm encoders in the beginning, we implemented a `Mechanism2d` display. This allowed us to see a visual of the arm, and see where the encoders think the arm is. This didn't have much use after that.
 
@@ -42,7 +42,9 @@ Now, that didn't stop us from having code problems with it that cause fairly lar
 
 We tried many things to solve this, and finally, the meeting before DCMP, we found the issues.
 
-The encoder is plugged into the RoboRIO using one of the DIO Ports. In the code, we use a `DutyCycleEncoder` class' `getDistance()` method to get the reading from the encoder. We supply the class with a 'distance-per-rotation' value of 2xpi. So, this method got us the measurement we needed. Now, what we didn't expect, is for this class to account for rollover.
+#### What went wrong?
+
+The encoder is plugged into the RoboRIO using one of the DIO Ports. In the code, we use a `DutyCycleEncoder` class's `getDistance()` method to get the reading from the encoder. We supply the class with a 'distance-per-rotation' value of 2π(2 times PI). So, this method got us the measurement we needed. Now, what we didn't expect, is for this class to account for rollover.
 
 Rollover is when the encoder makes one full rotation. In absolute mode, once it reaches that full rotation, it's actual output resets back to zero. The same thing happens going the other way. This class acounts for that, so when you go over one rotation, instead of going back to zero, it adds +1 to an internal counter, so you can go over 1 rotation.
 
@@ -54,7 +56,7 @@ TLDR, the DIO connection was loose. It kept disconnecting very briefly, usually 
 
 The first thing we did was tape down the DIO connectors with some electrical tape. I've seen other teams use hot glue to keep their PWM connectors down, which we should probably start doing.
 
-In the code, to prevent the rollover issue, we stopped using the `getDistance()` method, and started using the `getAbsolutePosition()` method, which does not account for rollover.
+In the code, to prevent the rollover issue, we stopped using the `getDistance()` method, and started using the `getAbsolutePosition()` method in our `Arm` class, which does not account for rollover. Note that we had to adjust the lower encoder so that the arm positions didn't have negative values.
 
 ```java
 public double getLowerPosition() {
