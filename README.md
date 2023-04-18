@@ -3,6 +3,8 @@
 [![Java CI with Gradle](https://github.com/team178/2023RobotCode/actions/workflows/gradle.yml/badge.svg?branch=main&event=push)](https://github.com/team178/2023RobotCode/actions/workflows/gradle.yml)
 [![WPILib](https://badgen.net/badge/WPILib/v2023.4.2/blue)](https://github.com/wpilibsuite/allwpilib/releases)
 
+### [Code Breakdown](https://github.com/team178/2023RobotCode/blob/main/2023-breakdown.md)
+
 ## Cool People:
 - Team 178 Laptop
 - Goose
