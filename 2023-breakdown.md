@@ -56,7 +56,7 @@ TLDR, the DIO connection was loose. It kept disconnecting very briefly, usually 
 
 The first thing we did was tape down the DIO connectors with some electrical tape. I've seen other teams use hot glue to keep their PWM connectors down, which we should probably start doing.
 
-In the code, to prevent the rollover issue, we stopped using the `getDistance()` method, and started using the `getAbsolutePosition()` method in our `Arm` class, which does not account for rollover. Note that we had to adjust the lower encoder so that the arm positions didn't have negative values.
+In the code, to prevent the rollover issue, we stopped using the `getDistance()` method, and started using the `getAbsolutePosition()` method in our `Arm` class, which does not account for rollover. Note that we had to adjust the lower encoder so that the arm positions didn't have negative values. The `(1/6)` we recently discovered does nothing, since Java does integer division that way (it's just 0).
 
 ```java
 public double getLowerPosition() {
