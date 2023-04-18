@@ -386,7 +386,7 @@ Lights this year were ran off the RoboRIO instead of a seperate Arduino controll
 
 < insert things from people who actually wrote this code >
 
-## [Combo](https://raw.githubusercontent.com/team178/2023RobotCode/main/src/main/java/frc/robot/utils/Combo.java)
+## [Combo](https://github.com/team178/2023RobotCode/main/src/main/java/frc/robot/utils/Combo.java)
 "Hey, so we have an arcade cabinet controller this year, right? So we can make combo moves?"
 
 ## m_
