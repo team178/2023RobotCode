@@ -113,7 +113,7 @@ The other drive method is called Cheesy Drive. It's a drive method taken from th
 
 The difference with cheesy drive is that it uses some more complex math, and also includes a quick-turn feature, that allows arcade style driving when pressing a trigger, so that while you can still have the high-speed turning benefit of curvature drive, you can still switch to arcade and be able to turn on the spot at lower speeds.
 
-Why aren't we using it? Because for some reasont he Falcons overheat when using it. We have no idea why. Plus, David was doing better with arcade drive.
+Why aren't we using it? Because for some reason he Falcons overheat when using it. We have no idea why. Plus, David was doing better with arcade drive.
 
 ### Pose Estimation
 
