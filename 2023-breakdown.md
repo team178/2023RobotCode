@@ -44,17 +44,17 @@ We tried many things to solve this, and finally, the meeting before DCMP, we fou
 
 #### What went wrong?
 
-The encoder is plugged into the RoboRIO using one of the DIO Ports. In the code, we use a `DutyCycleEncoder` class's `getDistance()` method to get the reading from the encoder. We supply the class with a 'distance-per-rotation' value of 2π(2 times PI). So, this method got us the measurement we needed. Now, what we didn't expect, is for this class to account for rollover.
+The encoder is plugged into the RoboRIO using one of the DIO Ports. In the code, we use a `DutyCycleEncoder` class's `getDistance()` method to get the reading from the encoder. We supply the class with a 'distance-per-rotation' value of 2π (2 times PI). So, this method got us the measurement we needed in radians. Now, what we didn't expect, is how this class accounted for rollover.
 
 Rollover is when the encoder makes one full rotation. In absolute mode, once it reaches that full rotation, it's actual output resets back to zero. The same thing happens going the other way. This class acounts for that, so when you go over one rotation, instead of going back to zero, it adds +1 to an internal counter, so you can go over 1 rotation.
 
 Turns out that it does this in a way that if the encoder is very briefly disconnected, it thinks it went a full rotation.
 
-TLDR, the DIO connection was loose. It kept disconnecting very briefly, usually upon an impact, and the code thinks the encoder when a full rotation. So suddenly, while it's at 5.9 radians and trying to get to 5.4 radians, the encoder reading suddenly becomes 11.5 radians and it think it's somewhere it isn't.
+TLDR, the DIO connection was loose. It kept disconnecting very briefly, usually upon an impact, and the code thinks the encoder when a full rotation. So suddenly, while it's at 5.9 radians and trying to get to 5.4 radians, the encoder reading becomes 11.5 radians and it think it's somewhere it isn't.
 
 #### How did we fix it?
 
-The first thing we did was tape down the DIO connectors with some electrical tape. I've seen other teams use hot glue to keep their PWM connectors down, which we should probably start doing.
+The first thing we did was tape down the DIO connectors with some electrical tape. I've seen other teams use hot glue to keep their PWM connectors down, which we should start doing.
 
 In the code, to prevent the rollover issue, we stopped using the `getDistance()` method, and started using the `getAbsolutePosition()` method in our `Arm` class, which does not account for rollover. Note that we had to adjust the lower encoder so that the arm positions didn't have negative values. The `(1/6)` we recently discovered does nothing, since Java does integer division that way (it's just 0).
 
