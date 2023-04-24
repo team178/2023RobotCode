@@ -88,9 +88,9 @@ public double getUpperPosition() {
 
 A lot of the drivetrain code this year was an attempt to make a better drivetrain code and it ended up looking really scary and messy. But what it actually does it a whole lot simpler than it appears, because Java sucks and makes things really abstracted and scary.
 
-All most of that code does is the same thing we were doing with the arm, using a PID and FeedForward loop to control the speeds of the wheels. Because we were using Falcons and we're not going to pay the subscription for Pheonix PRO, we convert our Falcon's encoder readings to meters or meters-per-second, and put that into the loop to control their speed. 
+All most of that code does is the same thing we were doing with the arm, using a PID and FeedForward loop to control the speeds of the wheels. Because we were using Falcons and we weren't going to pay the subscription for Pheonix PRO, we converted our Falcon's encoder readings to meters or meters-per-second, and then put that into the loop to control their speed. 
 
-Because the falcons were behind the gearbox, we had to do some maths to figure out how far the actual output shaft went. To do so, we multiply the number of motor rotations by the gear ratio to get the number of wheel rotations.
+Because the Falcons were behind the gearbox, we had to do some maths to figure out how far the actual output shaft went. To do so, we multiply the number of motor rotations by the gear ratio to get the number of wheel rotations.
 
 ```java
 double wheelRotations = motorRotations * DriveConstants.kGearboxRatio;
@@ -113,7 +113,7 @@ The other drive method is called Cheesy Drive. It's a drive method taken from th
 
 The difference with cheesy drive is that it uses some more complex math, and also includes a quick-turn feature, that allows arcade style driving when pressing a trigger, so that while you can still have the high-speed turning benefit of curvature drive, you can still switch to arcade and be able to turn on the spot at lower speeds.
 
-Why aren't we using it? Because for some reason the Falcons overheat when using it. We have no idea why. Plus, David was doing better with arcade drive.
+Why aren't we using it? Because for some reason the Falcons overheat when using it. We have no idea why. Plus, our driver was doing better with arcade drive.
 
 ### Pose Estimation
 
@@ -142,7 +142,7 @@ if (LimelightHelpers.getTV("limelight")) {
 }
 ```
 
-This pose is then averaged with the other sensor measurements to create a final estimated pose. But, the Limelight's estimations were fairly sparatic, which is common with a very shakey camera and image recognition. So, to fix this, we provided what is called a trust matrix. This tells the estimator how much to trust each measurement from the limelight, the X, Y, and rotation measurements.
+This pose is then averaged with the other sensor measurements to create a final estimated pose. But, the Limelight's estimations were fairly sporadic and inconsistent, which is common with a very shakey camera and image recognition. So, to fix this, we provided what is called a trust matrix. This tells the estimator how much to trust each measurement from the limelight, the X, Y, and rotation measurements.
 
 ```java
 private static Matrix<N3, N1> m_createVisionTrustMatrix() {
@@ -255,7 +255,7 @@ The rest of the commands are found under `commands/auto`. There is a base class,
 
 ## Trajectories
 
-Each command loads it's trajectories, or paths generated using pathplanner, in it's constructor. We'll use `MidCubeCharge` as an example.
+Each command loads it's trajectories, or paths generated using pathplanner, in its constructor. We'll use `MidCubeCharge` as an example.
 
 ```java
 getOnCharge = new AutoTrajectoryPair(PathPlanner.loadPath("MidGetOnCharge", new PathConstraints(1.0, 5), true));
@@ -385,6 +385,8 @@ If the robot is leaning forward, drive backwards slowly. If it's leaning backwar
 Lights this year were ran off the RoboRIO instead of a seperate Arduino controller like previous years. They were programmed to change between the alliance color and the color of the gamepiece the driver's wanted when a button on the controller was pressed.
 
 < insert things from people who actually wrote this code >
+
+Person who actually wrote lights code here; to be honest, not much needs to be said about lights. The lights default to the current alliance color of the robot, and the color of the lights can be changed to yellow and purple to signal for a cone or a cube. We had some trouble getting lights to work at first, but that was because we were being dumb. First we had soldering issues then we had issues of *write the correct port in the code*. I think.
 
 ## [Combo](https://github.com/team178/2023RobotCode/blob/main/src/main/java/frc/robot/utils/Combo.java)
 "Hey, so we have an arcade cabinet controller this year, right? So we can make combo moves?"
