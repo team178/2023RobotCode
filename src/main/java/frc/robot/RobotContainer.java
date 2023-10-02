@@ -102,7 +102,7 @@ public class RobotContainer {
         m_driverController.leftTrigger()
             .whileTrue(
                 Commands.run(() -> m_drivetrain.setSpeedMult(0.2)))
-            .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
+            .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(0.4))); // originally 1 this is for pep rally so i dont run someone over
 
         m_auxBox.b().onTrue(
             m_arm.setPosition(ArmPosition.HOME));
