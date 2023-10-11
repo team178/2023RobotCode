@@ -62,7 +62,7 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  private double m_speedMult = 0.4; // originally 1 this is for pep rally so i dont run someone over
+  private double m_speedMult = 1;
 
   /* Creates a new Drivetrain. */
   public Drivetrain() {

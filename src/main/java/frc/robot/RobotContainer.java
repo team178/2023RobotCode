@@ -102,7 +102,9 @@ public class RobotContainer {
         m_driverController.leftTrigger()
             .whileTrue(
                 Commands.run(() -> m_drivetrain.setSpeedMult(0.2)))
-            .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(0.4))); // originally 1 this is for pep rally so i dont run someone over
+            .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
+        // m_driverController.rightTrigger()
+        //     .whileTrue(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
 
         m_auxBox.b().onTrue(
             m_arm.setPosition(ArmPosition.HOME));
@@ -130,9 +132,9 @@ public class RobotContainer {
         m_auxBox.rightStick().onTrue(m_lights.runPurple());
         m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
 
-        new Combo(m_auxBox.getHID())
-            .quarterCircleKick()
-            .onTrue(Autos.placeHigh(m_arm, m_claw));
+        // new Combo(m_auxBox.getHID())
+        //     .quarterCircleKick()
+        //     .onTrue(Autos.placeHigh(m_arm, m_claw));
 
     }
 
