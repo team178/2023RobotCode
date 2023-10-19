@@ -98,13 +98,16 @@ public class RobotContainer {
         // .whileFalse(
         //   Commands.run(() -> m_drivetrain.setSpeedMult(0.05))
         // );
-
         m_driverController.leftTrigger()
             .whileTrue(
-                Commands.run(() -> m_drivetrain.setSpeedMult(0.2)))
-            .whileFalse(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
-        // m_driverController.rightTrigger()
-        //     .whileTrue(Commands.run(() -> m_drivetrain.setSpeedMult(1)));
+                Commands.run(() -> m_drivetrain.setSlowMode(true)))
+            .whileFalse(
+                Commands.run(() -> m_drivetrain.setSlowMode(false)));
+        m_driverController.rightTrigger()
+            .whileTrue(
+                Commands.run(() -> m_drivetrain.setFastMode(true)))
+            .whileFalse(
+                Commands.run(() -> m_drivetrain.setFastMode(false)));
 
         m_auxBox.b().onTrue(
             m_arm.setPosition(ArmPosition.HOME));
@@ -131,6 +134,11 @@ public class RobotContainer {
         m_auxBox.leftStick().onTrue(m_lights.runYellow());
         m_auxBox.rightStick().onTrue(m_lights.runPurple());
         m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
+        m_auxBox.rightTrigger().
+        whileTrue(
+            Commands.run(() -> m_drivetrain.setPauseMainControl(true)))
+        .whileFalse(
+            Commands.run(() -> m_drivetrain.setPauseMainControl(false)));
 
         // new Combo(m_auxBox.getHID())
         //     .quarterCircleKick()

@@ -62,7 +62,11 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_field = new Field2d();
   private final NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
-  private double m_speedMult = 1;
+  private boolean slowMode = false;
+  private boolean fastMode = false;
+  private boolean pauseMainControl = false;
+
+  private double m_speedMult = DriveConstants.defaultSpeedMult;
 
   /* Creates a new Drivetrain. */
   public Drivetrain() {
@@ -230,6 +234,8 @@ public class Drivetrain extends SubsystemBase {
 
   public Command arcadeDrive(DoubleSupplier forward, DoubleSupplier rot, double deadzone) {
     return this.run(() -> {
+      if(pauseMainControl) return;
+      m_speedMult = fastMode ? 1 : (slowMode ? DriveConstants.slowModeMult : DriveConstants.defaultSpeedMult);
       double x = MathUtil.applyDeadband(forward.getAsDouble(), deadzone)
           * (DriveConstants.kMaxSpeedMetersPerSecond * m_speedMult);
       double z = MathUtil.applyDeadband(rot.getAsDouble(), deadzone)
@@ -281,6 +287,18 @@ public class Drivetrain extends SubsystemBase {
       );
 
     });
+  }
+
+  public void setSlowMode(boolean slowMode) {
+      this.slowMode = slowMode;
+  }
+
+  public void setFastMode(boolean fastMode) {
+      this.fastMode = fastMode;
+  }
+
+  public void setPauseMainControl(boolean pauseMainControl) {
+      this.pauseMainControl = pauseMainControl;
   }
 
   @Override

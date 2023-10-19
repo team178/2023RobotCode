@@ -87,6 +87,9 @@ public final class Constants {
       matrix.set(2, 0, 5); // Theta
       return matrix;
     }
+
+    public static final double slowModeMult = 0.2;
+    public static final double defaultSpeedMult = 0.6;
   }
 
   public static class ClawConstants {
