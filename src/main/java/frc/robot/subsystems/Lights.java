@@ -36,7 +36,7 @@ public class Lights extends SubsystemBase {
   @Override
   public void periodic() {
     if(pauseMainControl) {
-      setColor((int) Timer.getFPGATimestamp() % 2 == 0 ? pausedColor : Color.kBlack);
+      setColor((int) (Timer.getFPGATimestamp() * 3) % 2 == 0 ? pausedColor : Color.kBlack);
     } else {
       setColor(color);
     }

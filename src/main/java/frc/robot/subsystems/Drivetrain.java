@@ -234,12 +234,15 @@ public class Drivetrain extends SubsystemBase {
 
   public Command arcadeDrive(DoubleSupplier forward, DoubleSupplier rot, double deadzone) {
     return this.run(() -> {
-      if(pauseMainControl) return;
       m_speedMult = fastMode ? 1 : (slowMode ? DriveConstants.slowModeMult : DriveConstants.defaultSpeedMult);
       double x = MathUtil.applyDeadband(forward.getAsDouble(), deadzone)
           * (DriveConstants.kMaxSpeedMetersPerSecond * m_speedMult);
       double z = MathUtil.applyDeadband(rot.getAsDouble(), deadzone)
           * (DriveConstants.kMaxRotationSpeedMetersPerSecond * m_speedMult);
+      if(pauseMainControl) {
+        x = 0;
+        z = 0;
+      }
       arcadeDrive(
           x,
           z);

@@ -139,7 +139,7 @@ public class RobotContainer {
         m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
         m_auxBox.rightTrigger().
             onTrue(
-            Commands.run(() -> {
+            Commands.runOnce(() -> {
                 m_drivetrain.togglePauseMainControl();
                 m_lights.setPauseMainControl(m_drivetrain.getPauseMainControl());
             }));
