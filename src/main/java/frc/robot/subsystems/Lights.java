@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +17,8 @@ public class Lights extends SubsystemBase {
   private AddressableLED m_lightBar;
 
   private Color color = new Color(0, 0, 0);
+  private final Color pausedColor = new Color(255, 125, 0);
+  private boolean pauseMainControl = false;
 
   public Lights() {
     initBar();
@@ -32,7 +35,11 @@ public class Lights extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setColor(color);
+    if(pauseMainControl) {
+      setColor((int) Timer.getFPGATimestamp() % 2 == 0 ? pausedColor : Color.kBlack);
+    } else {
+      setColor(color);
+    }
     m_lightBar.setData(m_lightBarBuffer);
   }
 
@@ -81,5 +88,9 @@ public class Lights extends SubsystemBase {
 
   public Command runPurple() {
     return run(() -> purple());
+  }
+
+  public void setPauseMainControl(boolean pauseMainControl) {
+      this.pauseMainControl = pauseMainControl;
   }
 }

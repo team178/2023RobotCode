@@ -53,6 +53,9 @@ public class RobotContainer {
     private final CommandXboxController m_auxBox =
         new CommandXboxController(OperatorConstants.kAuxControllerPort);
 
+    private final CommandXboxController m_altDriverController =
+        new CommandXboxController(OperatorConstants.kAltDriverControlPort);
+
     private final Field2d m_autoPreview = new Field2d();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -135,10 +138,11 @@ public class RobotContainer {
         m_auxBox.rightStick().onTrue(m_lights.runPurple());
         m_auxBox.leftTrigger().onTrue(m_lights.runDefaultColor());
         m_auxBox.rightTrigger().
-        whileTrue(
-            Commands.run(() -> m_drivetrain.setPauseMainControl(true)))
-        .whileFalse(
-            Commands.run(() -> m_drivetrain.setPauseMainControl(false)));
+            onTrue(
+            Commands.run(() -> {
+                m_drivetrain.togglePauseMainControl();
+                m_lights.setPauseMainControl(m_drivetrain.getPauseMainControl());
+            }));
 
         // new Combo(m_auxBox.getHID())
         //     .quarterCircleKick()

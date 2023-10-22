@@ -289,6 +289,10 @@ public class Drivetrain extends SubsystemBase {
     });
   }
 
+  public boolean getPauseMainControl() {
+    return pauseMainControl;
+  }
+
   public void setSlowMode(boolean slowMode) {
       this.slowMode = slowMode;
   }
@@ -299,6 +303,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void setPauseMainControl(boolean pauseMainControl) {
       this.pauseMainControl = pauseMainControl;
+  }
+
+  public void togglePauseMainControl() {
+    pauseMainControl = !pauseMainControl;
   }
 
   @Override
